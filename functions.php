@@ -11,10 +11,22 @@ function register_my_menus()
     register_nav_menus(
         array(
             'primary' => __('Primary Menu'),
+            'footer-menu' => __('Footer Menu'),
         )
     );
 }
 add_action('init', 'register_my_menus');
+
+function register_footer_menus()
+{
+    register_nav_menus(
+        array(
+            'footer-menu' => __('Footer Menu'),
+        )
+    );
+}
+add_action('init', 'register_footer_menus');
+
 
 
 function enqueue_gallery_scripts()
@@ -47,3 +59,9 @@ function load_more_images()
 }
 add_action('wp_ajax_load_more_images', 'load_more_images');
 add_action('wp_ajax_nopriv_load_more_images', 'load_more_images');
+
+function custom_theme_enqueue_styles()
+{
+    wp_enqueue_style('google-fonts', 'https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap', false);
+}
+add_action('wp_enqueue_scripts', 'custom_theme_enqueue_styles');

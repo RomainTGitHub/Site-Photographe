@@ -13,7 +13,7 @@
         <header class="custom-header">
             <div class="header-top">
                 <div class="site-title">
-                    <a href="<?php echo home_url(); ?>"><?php bloginfo('name'); ?></a>
+                    <a href=<?php echo home_url(); ?>> <img src="<?php echo get_stylesheet_directory_uri(); ?>/medias/Logo.png"> </a>
                 </div>
                 <nav class="nav-menu">
                     <?php

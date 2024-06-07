@@ -2,9 +2,14 @@
 
 <footer>
     <div class="footer-content">
-        <a href="#">Mentions légales</a>
-        <a href="#">Vie privée</a>
-        <a href="#">Tous droits réservés</a>
+        <?php
+        wp_nav_menu(array(
+            'theme_location' => 'footer-menu',
+            'container' => 'nav',
+            'container_class' => 'footer-nav',
+            'menu_class' => 'footer-menu'
+        ));
+        ?>
     </div>
 </footer>
 
