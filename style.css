@@ -71,6 +71,14 @@ body {
     display: block;
 }
 
+#primary-menu a:hover {
+    font-Size: 16;
+    font-Family: 'Space Mono';
+    font-Weight: 700;
+    text-Transform: uppercase;
+    word-Wrap: break-word
+}
+
 .header-image-container {
     position: relative !important;
     width: 100% !important;
@@ -169,6 +177,15 @@ body {
     margin-top: 20px;
 }
 
+#load-more-button:hover {
+    background-color: #000;
+    color: white;
+    font-Size: 12;
+    font-Family: 'Space Mono';
+    font-Weight: 700;
+    word-Wrap: break-word;
+}
+
 footer {
     display: flex;
     justify-content: space-around;
@@ -187,6 +204,16 @@ footer a {
     word-wrap: break-word;
     padding-left: 43px;
     padding-right: 43px;
+}
+
+footer a:hover {
+    color: #000;
+    text-decoration: none;
+    font-Size: 16;
+    font-Family: 'Space Mono';
+    font-Weight: 700;
+    text-Transform: uppercase;
+    word-Wrap: break-word;
 }
 
 .footer-menu {

@@ -13,6 +13,8 @@
     </div>
 </footer>
 
+<?php include locate_template('templates_part/contact_modal.php'); ?>
+
 <?php wp_footer(); ?>
 </body>
 
