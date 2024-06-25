@@ -8,6 +8,16 @@ function enqueue_bootstrap()
 }
 add_action('wp_enqueue_scripts', 'enqueue_bootstrap');
 
+function custom_enqueue_styles_scripts()
+{
+    // Enregistrer et charger le fichier CSS
+    wp_enqueue_style('custom-dropdown-style', get_template_directory_uri() . '/styles.css');
+
+    // Enregistrer et charger le fichier JavaScript
+    wp_enqueue_script('custom-dropdown-script', get_template_directory_uri() . '/scripts.js', array('jquery'), null, true);
+}
+add_action('wp_enqueue_scripts', 'custom_enqueue_styles_scripts');
+
 
 function my_custom_theme_enqueue_styles()
 {

@@ -137,13 +137,98 @@ body {
 .filters {
     display: flex;
     justify-content: space-between;
+    /* Assurer un espacement uniforme */
+    align-items: center;
+    /* Alignement vertical centré */
     margin-bottom: 20px;
 }
 
 .filters select {
     padding: 10px;
     font-size: 16px;
+    width: 30%;
+    /* Ajuster la largeur pour en mettre trois côte à côte */
 }
+
+/* Styles de base pour le menu déroulant */
+.dropdown {
+    position: relative;
+    display: inline-block;
+    width: 200px;
+    font-family: Arial, sans-serif;
+}
+
+
+.dropdown-selected {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+}
+
+.dropdown-selected::after {
+    content: '';
+    width: 16px;
+    height: 16px;
+    background-image: url('http://nathalie-mota.local/wp-content/themes/Site-Photographe/medias/chevron-down-s.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    transition: transform 0.3s ease;
+}
+
+.dropdown.open .dropdown-selected::after {
+    transform: rotate(180deg);
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-top: 5px;
+    width: 100%;
+    z-index: 1000;
+    list-style: none;
+    padding: 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown.open .dropdown-menu {
+    display: block;
+}
+
+.dropdown-item {
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.dropdown-item.first-item {
+    height: 50px;
+    display: flex;
+    align-items: center;
+}
+
+.dropdown-item:hover {
+    background-color: #FFD6D6;
+}
+
+.dropdown-item:active {
+    background-color: #FE5858;
+}
+
+.dropdown-menu .dropdown-item.selected {
+    background-color: #E00000;
+    color: white;
+}
+
 
 .gallery-grid {
     display: grid;

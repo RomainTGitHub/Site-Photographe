@@ -6,18 +6,39 @@ get_header();
 <div class="main-container">
     <div class="gallery-container">
         <div class="filters">
-            <select id="categories">
-                <option value="">Catégories</option>
-                <!-- Ajoutez des options de catégories ici -->
-            </select>
-            <select id="formats">
-                <option value="">Formats</option>
-                <!-- Ajoutez des options de formats ici -->
-            </select>
-            <select id="sort-by">
-                <option value="">Trier Par</option>
-                <!-- Ajoutez des options de tri ici -->
-            </select>
+            <!-- Premier menu déroulant -->
+            <div id="categories-dropdown" class="dropdown">
+                <div class="dropdown-selected">Catégories</div>
+                <ul class="dropdown-menu">
+                    <li class="dropdown-item first-item" data-value=""></li>
+                    <li class="dropdown-item" data-value="reception">Réception</li>
+                    <li class="dropdown-item" data-value="television">Télévision</li>
+                    <li class="dropdown-item" data-value="concert">Concert</li>
+                    <li class="dropdown-item" data-value="mariage">Mariage</li>
+                </ul>
+            </div>
+            <!-- Deuxième menu déroulant -->
+            <div id="formats-dropdown" class="dropdown">
+                <div class="dropdown-selected">Formats</div>
+                <ul class="dropdown-menu">
+                    <li class="dropdown-item first-item" data-value=""></li>
+                    <li class="dropdown-item" data-value="photo">Photo</li>
+                    <li class="dropdown-item" data-value="video">Vidéo</li>
+                    <li class="dropdown-item" data-value="audio">Audio</li>
+                    <li class="dropdown-item" data-value="document">Document</li>
+                </ul>
+            </div>
+            <!-- Troisième menu déroulant -->
+            <div id="sort-by-dropdown" class="dropdown">
+                <div class="dropdown-selected">Trier Par</div>
+                <ul class="dropdown-menu">
+                    <li class="dropdown-item first-item" data-value=""></li>
+                    <li class="dropdown-item" data-value="date">Date</li>
+                    <li class="dropdown-item" data-value="popularity">Popularité</li>
+                    <li class="dropdown-item" data-value="rating">Évaluation</li>
+                    <li class="dropdown-item" data-value="alphabetical">Alphabétique</li>
+                </ul>
+            </div>
         </div>
 
         <div class="gallery-grid">
