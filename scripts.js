@@ -3,9 +3,18 @@ jQuery(document).ready(function ($) {
     var page = 2;
 
     $('#load-more-button').on('click', function () {
+        var category = $('#categories-dropdown .dropdown-selected').attr('data-value');
+        var format = $('#formats-dropdown .dropdown-selected').attr('data-value');
+        var type = $('#sort-by-dropdown .dropdown-selected').attr('data-value');
+        var order = $('#order-by-dropdown .dropdown-selected').attr('data-value');
+
         var data = {
             'action': 'load_more_images',
             'page': page,
+            'category': category,
+            'format': format,
+            'type': type,
+            'order': order,
         };
 
         $.post(ajaxurl, data, function (response) {
@@ -44,7 +53,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 dropdownSelected.textContent = this.textContent;
                 dropdown.classList.remove('open');
                 const value = this.getAttribute('data-value');
+                dropdownSelected.setAttribute('data-value', value);
                 console.log('Selected value:', value);
+
                 // Vous pouvez ajouter ici du code pour gérer les changements de sélection
 
                 // Retirer la classe 'selected' de tous les items de ce menu déroulant spécifique
@@ -67,4 +78,57 @@ document.addEventListener('DOMContentLoaded', function () {
     setupDropdown('categories-dropdown');
     setupDropdown('formats-dropdown');
     setupDropdown('sort-by-dropdown');
+    setupDropdown('order-by-dropdown');
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    const categoriesDropdown = document.getElementById('categories-dropdown');
+    const formatsDropdown = document.getElementById('formats-dropdown');
+    const sortByDropdown = document.getElementById('sort-by-dropdown');
+    const orderByDropdown = document.getElementById('order-by-dropdown');
+
+    function updateGallery() {
+        const category = categoriesDropdown.querySelector('.dropdown-selected').getAttribute('data-value');
+        const format = formatsDropdown.querySelector('.dropdown-selected').getAttribute('data-value');
+        const type = sortByDropdown.querySelector('.dropdown-selected').getAttribute('data-value');
+        const order = orderByDropdown.querySelector('.dropdown-selected').getAttribute('data-value');
+
+        let url = new URL(window.location.href);
+        if (category) {
+            url.searchParams.set('category', category);
+        } else {
+            url.searchParams.delete('category');
+        }
+
+        if (format) {
+            url.searchParams.set('format', format);
+        } else {
+            url.searchParams.delete('format');
+        }
+
+        if (type) {
+            url.searchParams.set('type', type);
+        } else {
+            url.searchParams.delete('type');
+        }
+
+        if (order) {
+            url.searchParams.set('order', order);
+        } else {
+            url.searchParams.delete('order');
+        }
+
+        window.location.href = url.toString();
+    }
+
+    [categoriesDropdown, formatsDropdown, sortByDropdown, orderByDropdown].forEach(dropdown => {
+        dropdown.addEventListener('click', function (e) {
+            if (e.target.classList.contains('dropdown-item')) {
+                const selected = dropdown.querySelector('.dropdown-selected');
+                selected.textContent = e.target.textContent;
+                selected.setAttribute('data-value', e.target.getAttribute('data-value'));
+                updateGallery();
+            }
+        });
+    });
 });

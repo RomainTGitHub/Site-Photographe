@@ -69,29 +69,91 @@ add_action('wp_enqueue_scripts', 'enqueue_gallery_scripts');
 function load_more_images()
 {
     $paged = $_POST['page'];
+    $category = isset($_POST['category']) ? sanitize_text_field($_POST['category']) : '';
+    $format = isset($_POST['format']) ? sanitize_text_field($_POST['format']) : '';
+    $type = isset($_POST['type']) ? sanitize_text_field($_POST['type']) : 'date';
+    $order = isset($_POST['order']) ? sanitize_text_field($_POST['order']) : 'DESC';
+
     $args = array(
-        'post_type' => 'attachment',
-        'post_mime_type' => 'image',
-        'post_status' => 'inherit',
-        'posts_per_page' => 8,
+        'post_type' => 'photo', // Remplacez par votre CPT
         'paged' => $paged,
+        'orderby' => $type,
+        'order' => $order,
+        'posts_per_page' => 10,
     );
+
+    if ($category) {
+        $args['tax_query'][] = array(
+            'taxonomy' => 'category', // Remplacez par votre taxonomie
+            'field' => 'slug',
+            'terms' => $category,
+        );
+    }
+
+    if ($format) {
+        $args['meta_query'][] = array(
+            'key' => 'format', // Remplacez par votre clé de méta
+            'value' => $format,
+            'compare' => '='
+        );
+    }
+
     $query = new WP_Query($args);
-    if ($query->have_posts()) :
-        while ($query->have_posts()) : $query->the_post(); ?>
-            <div class="gallery-item">
-                <?php echo wp_get_attachment_image(get_the_ID(), 'large'); ?>
-            </div>
-<?php endwhile;
-        wp_reset_postdata();
-    endif;
+
+    if ($query->have_posts()) {
+        while ($query->have_posts()) {
+            $query->the_post();
+            // Assurez-vous de remplacer cette partie par votre template de rendu de photo
+            get_template_part('template-parts/content', 'photo');
+        }
+    } else {
+        echo '';
+    }
     wp_die();
 }
+
 add_action('wp_ajax_load_more_images', 'load_more_images');
 add_action('wp_ajax_nopriv_load_more_images', 'load_more_images');
 
+// Modifiez la requête principale pour prendre en compte les filtres
+function filter_gallery_query($query)
+{
+    if (!is_admin() && $query->is_main_query() && is_post_type_archive('photo')) {
+        $category = isset($_GET['category']) ? sanitize_text_field($_GET['category']) : '';
+        $format = isset($_GET['format']) ? sanitize_text_field($_GET['format']) : '';
+        $type = isset($_GET['type']) ? sanitize_text_field($_GET['type']) : 'date';
+        $order = isset($_GET['order']) ? sanitize_text_field($_GET['order']) : 'DESC';
+
+        $query->set('orderby', $type);
+        $query->set('order', $order);
+
+        if ($category) {
+            $query->set('tax_query', array(
+                array(
+                    'taxonomy' => 'category',
+                    'field' => 'slug',
+                    'terms' => $category,
+                ),
+            ));
+        }
+
+        if ($format) {
+            $query->set('meta_query', array(
+                array(
+                    'key' => 'format',
+                    'value' => $format,
+                    'compare' => '=',
+                ),
+            ));
+        }
+    }
+}
+add_action('pre_get_posts', 'filter_gallery_query');
+
+
 function custom_theme_enqueue_styles()
 {
-    wp_enqueue_style('google-fonts', 'https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap', false);
+    wp_enqueue_style('google-fonts-spacemono', 'https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap', false);
+    wp_enqueue_style('google-fonts-poppins', 'https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap', false);
 }
 add_action('wp_enqueue_scripts', 'custom_theme_enqueue_styles');

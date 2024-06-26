@@ -198,6 +198,15 @@ body {
     justify-content: space-between;
     align-items: center;
     font-weight: bold;
+    font-family: 'Poppins';
+    color: var(--Black, #313144);
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 18px;
+    letter-spacing: 0.36px;
+    text-transform: uppercase;
+    gap: 10px;
 }
 
 .dropdown-selected::after {
@@ -236,6 +245,14 @@ body {
     padding: 10px;
     cursor: pointer;
     transition: background-color 0.2s;
+    font-family: 'Poppins';
+    color: var(--Black, #313144);
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 18px;
+    letter-spacing: 0.36px;
+    gap: 10px;
 }
 
 .dropdown-item.first-item {
