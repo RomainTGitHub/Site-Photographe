@@ -77,20 +77,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
     setupDropdown('categories-dropdown');
     setupDropdown('formats-dropdown');
-    setupDropdown('sort-by-dropdown');
     setupDropdown('order-by-dropdown');
 });
 
 document.addEventListener('DOMContentLoaded', function () {
     const categoriesDropdown = document.getElementById('categories-dropdown');
     const formatsDropdown = document.getElementById('formats-dropdown');
-    const sortByDropdown = document.getElementById('sort-by-dropdown');
     const orderByDropdown = document.getElementById('order-by-dropdown');
 
     function updateGallery() {
         const category = categoriesDropdown.querySelector('.dropdown-selected').getAttribute('data-value');
         const format = formatsDropdown.querySelector('.dropdown-selected').getAttribute('data-value');
-        const type = sortByDropdown.querySelector('.dropdown-selected').getAttribute('data-value');
         const order = orderByDropdown.querySelector('.dropdown-selected').getAttribute('data-value');
 
         let url = new URL(window.location.href);
@@ -106,12 +103,6 @@ document.addEventListener('DOMContentLoaded', function () {
             url.searchParams.delete('format');
         }
 
-        if (type) {
-            url.searchParams.set('type', type);
-        } else {
-            url.searchParams.delete('type');
-        }
-
         if (order) {
             url.searchParams.set('order', order);
         } else {
@@ -121,7 +112,7 @@ document.addEventListener('DOMContentLoaded', function () {
         window.location.href = url.toString();
     }
 
-    [categoriesDropdown, formatsDropdown, sortByDropdown, orderByDropdown].forEach(dropdown => {
+    [categoriesDropdown, formatsDropdown, orderByDropdown].forEach(dropdown => {
         dropdown.addEventListener('click', function (e) {
             if (e.target.classList.contains('dropdown-item')) {
                 const selected = dropdown.querySelector('.dropdown-selected');
@@ -130,5 +121,27 @@ document.addEventListener('DOMContentLoaded', function () {
                 updateGallery();
             }
         });
+    });
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    const hamburger = document.querySelector('.hamburger');
+    const navMenu = document.querySelector('.nav-menu');
+    const hamburgerIcon = document.querySelector('.hamburger-icon');
+    const closeIcon = document.querySelector('.close-icon');
+    const body = document.body;
+
+    hamburger.addEventListener('click', function () {
+        navMenu.classList.toggle('active');
+        hamburger.classList.toggle('open');
+        body.classList.toggle('no-scroll');
+
+        if (navMenu.classList.contains('active')) {
+            hamburgerIcon.style.display = 'none';
+            closeIcon.style.display = 'block';
+        } else {
+            hamburgerIcon.style.display = 'block';
+            closeIcon.style.display = 'none';
+        }
     });
 });

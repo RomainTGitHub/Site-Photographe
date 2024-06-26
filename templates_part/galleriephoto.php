@@ -20,17 +20,9 @@
 				<li class="dropdown-item" data-value="4/4">4/4</li>
 			</ul>
 		</div>
-		<!-- Troisième menu déroulant -->
-		<div id="sort-by-dropdown" class="dropdown">
-			<div class="dropdown-selected">Type</div>
-			<ul class="dropdown-menu">
-				<li class="dropdown-item" data-value="argentique">Argentique</li>
-				<li class="dropdown-item" data-value="numerique">Numérique</li>
-			</ul>
-		</div>
-		<!-- Quatriéme menu déroulant -->
+		<!-- Troisiéme menu déroulant -->
 		<div id="order-by-dropdown" class="dropdown">
-			<div class="dropdown-selected">Ordre</div>
+			<div class="dropdown-selected">Trier par</div>
 			<ul class="dropdown-menu">
 				<li class="dropdown-item" data-value="recentes">A partir des plus récentes</li>
 				<li class="dropdown-item" data-value="anciennes">A partir des plus anciennes</li>

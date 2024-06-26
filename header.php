@@ -15,6 +15,10 @@
                 <div class="site-title">
                     <a href=<?php echo home_url(); ?>> <img src="<?php echo get_stylesheet_directory_uri(); ?>/medias/Logo.png"> </a>
                 </div>
+                <button class="hamburger">
+                    <img src="<?php echo get_template_directory_uri(); ?>/medias/State=default.png" alt="Menu" class="hamburger-icon">
+                    <img src="<?php echo get_template_directory_uri(); ?>/medias/State=Open.png" alt="Close" class="close-icon" style="display: none;">
+                </button>
                 <nav class="nav-menu">
                     <?php
                     wp_nav_menu(array(

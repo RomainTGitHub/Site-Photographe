@@ -353,3 +353,123 @@ footer a:hover {
     display: flex;
     justify-content: center;
 }
+
+/* Styles pour le menu hamburger */
+.hamburger {
+    display: none;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    z-index: 10;
+}
+
+.hamburger img {
+    width: 30px;
+    height: 30px;
+}
+
+.hamburger div {
+    width: 30px;
+    height: 3px;
+    background-color: black;
+    border-radius: 5px;
+    transition: all 0.3s linear;
+    position: relative;
+}
+
+body.no-scroll {
+    overflow: hidden;
+}
+
+/* Styles pour le menu en version mobile */
+@media screen and (max-width: 800px) {
+    .nav-menu {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        height: 100vh;
+        background-color: #E00000;
+        position: fixed;
+        top: 0;
+        left: 0;
+        justify-content: center;
+        align-items: center;
+        z-index: 9;
+    }
+
+    .nav-menu.active {
+        display: flex;
+        margin-top: 60px;
+    }
+
+    .hamburger {
+        display: flex;
+    }
+
+    .site-title {
+        margin-left: 10px;
+    }
+
+    #primary-menu {
+        margin: 0;
+        padding: 0;
+        flex-direction: column;
+        width: 100%;
+        text-align: center;
+    }
+
+    #primary-menu li {
+        margin: 20px 0;
+    }
+
+    #primary-menu a {
+        color: #FFF;
+        text-align: center;
+        font-family: 'Space Mono';
+        font-size: 44px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+        text-transform: uppercase;
+    }
+
+    #primary-menu a:hover {
+        color: #ff6347;
+        /* Couleur de survol */
+    }
+
+    .gallery-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .filters {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-right: 60px;
+        gap: 10px;
+    }
+
+    .dropdown-selected {
+        width: 270px;
+    }
+
+    .footer-nav ul {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+
+
+@media screen and (max-width: 1000px) {
+    .custom-header .header-text {
+        font-size: 50px !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-26%, -50%) !important;
+        line-height: normal;
+        font-weight: 700;
+    }
+}
