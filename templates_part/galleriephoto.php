@@ -16,8 +16,6 @@
 			<ul class="dropdown-menu">
 				<li class="dropdown-item" data-value="portrait">Portrait</li>
 				<li class="dropdown-item" data-value="paysage">Paysage</li>
-				<li class="dropdown-item" data-value="1/1">1/1</li>
-				<li class="dropdown-item" data-value="4/4">4/4</li>
 			</ul>
 		</div>
 		<!-- Troisiéme menu déroulant -->
@@ -35,7 +33,6 @@
 		// Récupérer les filtres et les utiliser dans la requête WP
 		$category_filter = isset($_GET['category']) ? sanitize_text_field($_GET['category']) : '';
 		$format_filter = isset($_GET['format']) ? sanitize_text_field($_GET['format']) : '';
-		$type_filter = isset($_GET['type']) ? sanitize_text_field($_GET['type']) : '';
 		$order_by = isset($_GET['order']) ? sanitize_text_field($_GET['order']) : 'desc';
 
 		// Configurer les arguments de la requête
@@ -63,15 +60,6 @@
 				'taxonomy' => 'format',
 				'field' => 'slug',
 				'terms' => $format_filter,
-			);
-		}
-
-		// Ajouter le filtre de type à la requête
-		if (!empty($type_filter)) {
-			$args['meta_query'][] = array(
-				'key' => 'type',
-				'value' => $type_filter,
-				'compare' => 'LIKE'
 			);
 		}
 

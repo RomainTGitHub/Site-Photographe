@@ -1,34 +1,3 @@
-jQuery(document).ready(function ($) {
-    var ajaxurl = "<?php echo admin_url('admin-ajax.php'); ?>";
-    var page = 2;
-
-    $('#load-more-button').on('click', function () {
-        var category = $('#categories-dropdown .dropdown-selected').attr('data-value');
-        var format = $('#formats-dropdown .dropdown-selected').attr('data-value');
-        var type = $('#sort-by-dropdown .dropdown-selected').attr('data-value');
-        var order = $('#order-by-dropdown .dropdown-selected').attr('data-value');
-
-        var data = {
-            'action': 'load_more_images',
-            'page': page,
-            'category': category,
-            'format': format,
-            'type': type,
-            'order': order,
-        };
-
-        $.post(ajaxurl, data, function (response) {
-            if (response) {
-                $('.gallery-grid').append(response);
-                page++;
-            } else {
-                $('#load-more-button').text('No more images');
-                $('#load-more-button').prop('disabled', true);
-            }
-        });
-    });
-});
-
 document.addEventListener('DOMContentLoaded', function () {
     function setupDropdown(dropdownId) {
         const dropdown = document.getElementById(dropdownId);
