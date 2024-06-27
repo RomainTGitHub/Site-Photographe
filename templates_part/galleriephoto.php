@@ -65,9 +65,16 @@
 
 		$query = new WP_Query($args);
 		if ($query->have_posts()) :
-			while ($query->have_posts()) : $query->the_post(); ?>
+			while ($query->have_posts()) : $query->the_post();
+				// Obtenir l'ID du post actuel
+				$post_id = get_the_ID();
+				// Créer le lien vers infophoto.php avec l'ID du post
+				$info_photo_link = get_template_directory_uri() . "/infophoto.php?id=" . $post_id;
+		?>
 				<div class="gallery-item">
-					<?php the_post_thumbnail('large'); ?>
+					<a href="<?php echo esc_url($info_photo_link); ?>">
+						<?php the_post_thumbnail('large'); ?>
+					</a>
 				</div>
 			<?php endwhile;
 			wp_reset_postdata();
