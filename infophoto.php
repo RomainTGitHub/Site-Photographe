@@ -21,7 +21,7 @@ if (isset($_GET['id'])) {
         $categories = wp_get_post_terms($post_id, 'categorie', array("fields" => "names"));
         $formats = wp_get_post_terms($post_id, 'format', array("fields" => "names"));
         $types = get_field('type', $post_id);  // Utilisation de get_field() pour ACF
-        $year = get_post_meta($post_id, 'year', true);
+        $year = get_the_date('Y', $post_id); // Utilisation de get_the_date() pour l'année de publication
 ?>
         <div class="photo-info">
             <img src="<?php echo esc_url($image_url); ?>" alt="<?php echo esc_attr($title); ?>">
@@ -55,6 +55,9 @@ if (isset($_GET['id'])) {
                 ?>
             </p>
             <p><strong>Année :</strong> <?php echo esc_html($year); ?></p>
+        </div>
+        <div>
+            <button id="contactButton" class="cta-button" data-reference="<?php echo esc_attr($reference); ?>">Contact</button>
         </div>
 <?php
     } else {

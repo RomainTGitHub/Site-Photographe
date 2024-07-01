@@ -1,4 +1,11 @@
 <?php
+function my_enqueue_scripts()
+{
+    wp_enqueue_script('jquery');
+    wp_enqueue_script('contact-form-7');
+    wp_enqueue_script('custom-scripts', get_template_directory_uri() . '/js/scripts.js', array('jquery', 'contact-form-7'), null, true);
+}
+add_action('wp_enqueue_scripts', 'my_enqueue_scripts');
 
 function enqueue_bootstrap()
 {
@@ -18,7 +25,6 @@ function custom_enqueue_styles_scripts()
 }
 add_action('wp_enqueue_scripts', 'custom_enqueue_styles_scripts');
 
-
 function my_custom_theme_enqueue_styles()
 {
     wp_enqueue_style('custom-style', get_stylesheet_uri());
@@ -34,7 +40,6 @@ function my_custom_theme_scripts()
     wp_enqueue_script('my-custom-script');
 }
 add_action('wp_enqueue_scripts', 'my_custom_theme_scripts');
-
 
 function register_my_menus()
 {
@@ -56,100 +61,6 @@ function register_footer_menus()
     );
 }
 add_action('init', 'register_footer_menus');
-
-
-
-function enqueue_gallery_scripts()
-{
-    wp_enqueue_script('gallery-js', get_stylesheet_directory_uri() . '/gallery.js', array('jquery'), null, true);
-}
-add_action('wp_enqueue_scripts', 'enqueue_gallery_scripts');
-
-
-function load_more_images()
-{
-    $paged = $_POST['page'];
-    $category = isset($_POST['category']) ? sanitize_text_field($_POST['category']) : '';
-    $format = isset($_POST['format']) ? sanitize_text_field($_POST['format']) : '';
-    $type = isset($_POST['type']) ? sanitize_text_field($_POST['type']) : 'date';
-    $order = isset($_POST['order']) ? sanitize_text_field($_POST['order']) : 'DESC';
-
-    $args = array(
-        'post_type' => 'photo', // Remplacez par votre CPT
-        'paged' => $paged,
-        'orderby' => $type,
-        'order' => $order,
-        'posts_per_page' => 10,
-    );
-
-    if ($category) {
-        $args['tax_query'][] = array(
-            'taxonomy' => 'category', // Remplacez par votre taxonomie
-            'field' => 'slug',
-            'terms' => $category,
-        );
-    }
-
-    if ($format) {
-        $args['meta_query'][] = array(
-            'key' => 'format', // Remplacez par votre clé de méta
-            'value' => $format,
-            'compare' => '='
-        );
-    }
-
-    $query = new WP_Query($args);
-
-    if ($query->have_posts()) {
-        while ($query->have_posts()) {
-            $query->the_post();
-            // Assurez-vous de remplacer cette partie par votre template de rendu de photo
-            get_template_part('template-parts/content', 'photo');
-        }
-    } else {
-        echo '';
-    }
-    wp_die();
-}
-
-add_action('wp_ajax_load_more_images', 'load_more_images');
-add_action('wp_ajax_nopriv_load_more_images', 'load_more_images');
-
-// Modifiez la requête principale pour prendre en compte les filtres
-function filter_gallery_query($query)
-{
-    if (!is_admin() && $query->is_main_query() && is_post_type_archive('photo')) {
-        $category = isset($_GET['category']) ? sanitize_text_field($_GET['category']) : '';
-        $format = isset($_GET['format']) ? sanitize_text_field($_GET['format']) : '';
-        $type = isset($_GET['type']) ? sanitize_text_field($_GET['type']) : 'date';
-        $order = isset($_GET['order']) ? sanitize_text_field($_GET['order']) : 'DESC';
-
-        $query->set('orderby', $type);
-        $query->set('order', $order);
-
-        if ($category) {
-            $query->set('tax_query', array(
-                array(
-                    'taxonomy' => 'category',
-                    'field' => 'slug',
-                    'terms' => $category,
-                ),
-            ));
-        }
-
-        if ($format) {
-            $query->set('meta_query', array(
-                array(
-                    'key' => 'format',
-                    'value' => $format,
-                    'compare' => '=',
-                ),
-            ));
-        }
-    }
-}
-add_action('pre_get_posts', 'filter_gallery_query');
-
 
 function custom_theme_enqueue_styles()
 {

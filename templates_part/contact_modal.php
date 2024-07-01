@@ -4,9 +4,6 @@
         <div class="modal-content">
             <div class="modal-header">
                 <img src="<?php echo get_stylesheet_directory_uri(); ?>/medias/Contact header.png">
-                <button type=" button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
             </div>
             <div class="modal-body">
                 <form id="contactForm">

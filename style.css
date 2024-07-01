@@ -381,6 +381,145 @@ body.no-scroll {
     overflow: hidden;
 }
 
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1050;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    outline: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-dialog {
+    position: relative;
+    width: auto;
+    pointer-events: none;
+    max-width: 500px;
+    width: 100%;
+}
+
+.modal-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    pointer-events: auto;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 0.3rem;
+    outline: 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    align-items: center;
+    /* Centre horizontalement les éléments */
+}
+
+.modal-header {
+    display: flex;
+    justify-content: center;
+    /* Centre horizontalement le contenu */
+    border-bottom: 1px solid #e9ecef;
+    border-top-left-radius: 0.3rem;
+    border-top-right-radius: 0.3rem;
+    width: 100%;
+    /* Prend toute la largeur pour centrer l'image */
+}
+
+.modal-header img {
+    max-width: 107%;
+    height: auto;
+}
+
+.modal-body {
+    position: relative;
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Centre horizontalement les éléments */
+    width: 100%;
+    /* Prend toute la largeur */
+}
+
+.modal-body form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Centre horizontalement les éléments du formulaire */
+    width: 100%;
+    /* Prend toute la largeur */
+}
+
+.modal-body form label {
+    margin-bottom: 0.5rem;
+    color: #313144;
+    font-family: 'Poppins';
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    text-transform: uppercase;
+}
+
+.modal-body form input,
+.modal-body form textarea {
+    margin-bottom: 1rem;
+    border: 1px solid #B8BBC2;
+    border-radius: 8px;
+    width: 100%;
+    background: #FFF;
+}
+
+.wpcf7-form-control.wpcf7-textarea {
+    height: 210px !important;
+    width: 277px !important;
+}
+
+.wpcf7-form-control.wpcf7-text.wpcf7-validates-as-required {
+    height: 40px;
+}
+
+.wpcf7-form-control.wpcf7-submit.has-spinner {
+    display: flex;
+    width: 263px;
+    height: 50px;
+    padding: 8px 15px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+    color: #000;
+    font-family: 'Space Mono';
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    border-radius: 2px;
+    background: #D8D8D8;
+    box-shadow: 0px 2px 1px 0px rgba(0, 0, 0, 0.02);
+}
+
+.cta-button {
+    background-color: #008CBA;
+    color: white;
+    padding: 15px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+}
+
 /* Styles pour le menu en version mobile */
 @media screen and (max-width: 800px) {
     .nav-menu {

@@ -25,14 +25,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 dropdownSelected.setAttribute('data-value', value);
                 console.log('Selected value:', value);
 
-                // Vous pouvez ajouter ici du code pour gérer les changements de sélection
-
-                // Retirer la classe 'selected' de tous les items de ce menu déroulant spécifique
                 dropdownItems.forEach(function (dropdownItem) {
                     dropdownItem.classList.remove('selected');
                 });
 
-                // Ajouter la classe 'selected' à l'élément cliqué
                 this.classList.add('selected');
             });
         });
@@ -113,4 +109,44 @@ document.addEventListener('DOMContentLoaded', function () {
             closeIcon.style.display = 'none';
         }
     });
+});
+
+jQuery(document).ready(function ($) {
+    var modal = $('#contactModal');
+    var btn = $('#contactButton');
+
+    btn.on('click', function () {
+        var photoReference = $(this).data('reference');
+        if (photoReference) {
+            $('#photo-ref').val(photoReference);
+        }
+        modal.addClass('show');
+        modal.css('display', 'flex');
+    });
+
+    $(window).on('click', function (event) {
+        if ($(event.target).is(modal)) {
+            modal.removeClass('show');
+            modal.css('display', 'none');
+        }
+    });
+
+    // Intercepter la soumission du formulaire Contact Form 7
+    document.addEventListener('wpcf7mailsent', function (event) {
+        modal.removeClass('show');
+        modal.css('display', 'none');
+        alert("Formulaire envoyé avec succès !");
+    }, false);
+
+    document.addEventListener('wpcf7invalid', function (event) {
+        alert("Veuillez vérifier les champs du formulaire.");
+    }, false);
+
+    document.addEventListener('wpcf7spam', function (event) {
+        alert("Le message a été identifié comme spam.");
+    }, false);
+
+    document.addEventListener('wpcf7mailfailed', function (event) {
+        alert("Échec de l'envoi du message.");
+    }, false);
 });
