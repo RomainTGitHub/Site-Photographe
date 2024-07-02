@@ -392,21 +392,38 @@ body.no-scroll {
     overflow: hidden;
 }
 
-/* Styles pour la modal */
-.modal {
+#overlay {
     display: none;
+    /* Caché par défaut */
     position: fixed;
-    z-index: 1050;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    /* Couleur de fond noire avec transparence */
+    z-index: 900;
+    /* En dessous de la modale mais au-dessus du reste */
+}
+
+/* Styles pour la modal */
+.contactModal {
+    display: none !important;
+    position: fixed;
+    z-index: 1000;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
     overflow: hidden;
     outline: 0;
-    background-color: rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.contactModal .show {
+    display: block !important;
 }
 
 .modal-dialog {
@@ -518,6 +535,18 @@ body.no-scroll {
     box-shadow: 0px 2px 1px 0px rgba(0, 0, 0, 0.02);
 }
 
+#form-message p {
+    margin-top: 10px;
+}
+
+#form-message p.success {
+    color: green;
+}
+
+#form-message p.error {
+    color: red;
+}
+
 /* Bouton d'appel à l'action */
 .cta-button {
     background-color: #008CBA;
@@ -531,6 +560,45 @@ body.no-scroll {
     cursor: pointer;
     border: none;
     border-radius: 4px;
+}
+
+/* Navigation des photos */
+.photo-navigation {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.nav-button {
+    background-color: #0073e6;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+    margin: 0 10px;
+}
+
+.nav-button:hover {
+    background-color: #005bb5;
+}
+
+.thumbnail {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100px;
+    height: 100px;
+    cursor: pointer;
+}
+
+.thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 5px;
 }
 
 /* Styles pour le menu en version mobile */

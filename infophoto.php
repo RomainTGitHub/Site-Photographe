@@ -77,6 +77,11 @@ if (isset($_GET['id'])) {
             <!-- Affiche l'année de la photo -->
             <p><strong>Année :</strong> <?php echo esc_html($year); ?></p>
         </div>
+        <p>Cette photo vous intéresse?</p>
+        <div id="overlay"></div>
+        <button id="contactBtn" class="cta-button" data-reference="<?php echo esc_attr($reference); ?>">Contact</button>
+
+
 <?php
     } else {
         // Affiche un message si le post n'existe pas.
