@@ -95,6 +95,7 @@ function footer_widget_area()
 add_action('widgets_init', 'footer_widget_area');
 
 // Fonction pour ajouter un type de message personnalisé.
+/*
 function create_custom_post_type()
 {
     register_post_type(
@@ -113,7 +114,7 @@ function create_custom_post_type()
 }
 // Attache la fonction create_custom_post_type à l'action init.
 add_action('init', 'create_custom_post_type');
-
+*/
 // Fonction pour ajouter des polices google fonts.
 function add_google_fonts()
 {
