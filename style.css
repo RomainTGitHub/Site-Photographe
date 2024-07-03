@@ -199,6 +199,13 @@ body {
     font-family: Arial, sans-serif;
 }
 
+.dropdown-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    text-align: center;
+}
+
 .dropdown-selected {
     background-color: #fff;
     border: 1px solid #ccc;
@@ -285,7 +292,7 @@ body {
 }
 
 /* Grille de la galerie */
-.gallery-grid {
+.gallery-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
@@ -298,12 +305,12 @@ body {
 }
 
 /* Bouton charger plus */
-.load-more {
+.load-more-container {
     text-align: center;
     margin-top: 20px;
 }
 
-#load-more-button {
+.load-more-button {
     color: 'black';
     font-size: 12;
     font-family: 'Space Mono';
@@ -318,7 +325,7 @@ body {
     margin-top: 20px;
 }
 
-#load-more-button:hover {
+.load-more-button:hover {
     background-color: #000;
     color: white;
     font-size: 12;
@@ -451,6 +458,7 @@ body.no-scroll {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     align-items: center;
     /* Centre horizontalement les éléments */
+    margin-top: 50px;
 }
 
 .modal-header {
@@ -588,9 +596,182 @@ body.no-scroll {
     color: #000;
 }
 
-.photos-connexes {
+.related-photos-container {
+    margin-top: 20px;
+}
+
+.related-photos {
     display: flex;
-    flex-direction: row;
+    justify-content: space-around;
+}
+
+.related-photo-card {
+    position: relative;
+    width: 300px;
+    height: 300px;
+    overflow: hidden;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+}
+
+.related-photo-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.related-photo-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    /* Augmentation de l'opacité pour rendre l'image plus sombre */
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 10;
+    /* Assure que la superposition est au-dessus de l'image */
+    pointer-events: none;
+    /* Désactive les interactions de la superposition */
+}
+
+.related-photo-card:hover .related-photo-overlay {
+    opacity: 1;
+    pointer-events: auto;
+    /* Réactive les interactions au survol */
+}
+
+.related-photo-card:hover img {
+    opacity: 0.7;
+}
+
+.related-photo-fullscreen {
+    align-self: flex-end;
+    margin: 10px;
+}
+
+.related-photo-fullscreen a {
+    color: white;
+    font-size: 1.5em;
+}
+
+.related-photo-view {
+    align-self: center;
+    margin: 10px;
+}
+
+.related-photo-view a {
+    color: white;
+    font-size: 2em;
+}
+
+.related-photo-info {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+.related-photo-reference {
+    font-size: 0.9em;
+}
+
+.related-photo-category {
+    font-size: 0.9em;
+}
+
+/* Lightbox styles */
+.lightbox {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.8);
+    justify-content: center;
+    align-items: center;
+}
+
+.lightbox-content {
+    position: relative;
+    text-align: center;
+    width: 90%;
+    /* Assurez-vous que le contenu prend 90% de la largeur de la fenêtre */
+    max-width: 90%;
+    /* Limite la largeur maximale à 90% */
+    max-height: 90%;
+    /* Limite la hauteur maximale à 90% */
+}
+
+.lightbox img {
+    width: 100%;
+    height: auto;
+    max-height: 80vh;
+    /* Limite la hauteur maximale de l'image */
+    object-fit: contain;
+    /* Contenir l'image dans la boîte sans la déformer */
+}
+
+.lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    color: white;
+    font-size: 30px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.lightbox-prev,
+.lightbox-next {
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    width: auto;
+    margin-top: -22px;
+    padding: 16px;
+    color: white;
+    font-weight: bold;
+    font-size: 30px;
+    transition: 0.3s;
+    user-select: none;
+}
+
+.lightbox-prev {
+    left: 20px;
+    /* Position à gauche de l'image */
+}
+
+.lightbox-next {
+    right: 20px;
+    /* Position à droite de l'image */
+}
+
+.lightbox-prev:hover,
+.lightbox-next:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.lightbox-info {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    color: white;
+    font-size: 16px;
+}
+
+.lightbox-reference,
+.lightbox-category {
+    padding: 10px;
+    width: 50%;
+    /* S'assure que chaque élément prend 50% de la largeur disponible */
 }
 
 

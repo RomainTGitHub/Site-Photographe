@@ -117,52 +117,65 @@ if (isset($_GET['id'])) {
             </div>
 
             <!-- Ajout de deux photos aléatoires de la même catégorie -->
-            <div class="related-photos">
-                <h2>VOUS AIMEREZ AUSSI</h2>
-                <div class="photos-connexes">
-                    <?php
-                    if (!empty($category_slugs)) {
-                        // Récupère deux posts aléatoires de la même catégorie
-                        $related_args = array(
-                            'post_type' => $custom_post_type_slug,
-                            'posts_per_page' => 2,
-                            'post__not_in' => array($post_id),
-                            'tax_query' => array(
-                                array(
-                                    'taxonomy' => 'categorie',
-                                    'field' => 'slug',
-                                    'terms' => $category_slugs,
-                                ),
+            <h2>VOUS AIMEREZ AUSSI</h2>
+            <div class="related-photos-container">
+                <?php
+                if (!empty($category_slugs)) {
+                    // Récupère deux posts aléatoires de la même catégorie
+                    $related_args = array(
+                        'post_type' => $custom_post_type_slug,
+                        'posts_per_page' => 2,
+                        'post__not_in' => array($post_id),
+                        'tax_query' => array(
+                            array(
+                                'taxonomy' => 'categorie',
+                                'field' => 'slug',
+                                'terms' => $category_slugs,
                             ),
-                            'orderby' => 'rand'
-                        );
+                        ),
+                        'orderby' => 'rand'
+                    );
 
-                        $related_query = new WP_Query($related_args);
+                    $related_query = new WP_Query($related_args);
 
-                        if ($related_query->have_posts()) {
-                            while ($related_query->have_posts()) {
-                                $related_query->the_post();
-                                $related_image_url = get_the_post_thumbnail_url(get_the_ID(), 'medium');
-                                $related_title = get_the_title();
-                    ?>
-                                <div class="related-photo">
-                                    <a href="?id=<?php echo get_the_ID(); ?>">
-                                        <img src="<?php echo esc_url($related_image_url); ?>" alt="<?php echo esc_attr($related_title); ?>">
-                                    </a>
+                    if ($related_query->have_posts()) {
+                        echo '<div class="related-photos">';
+                        while ($related_query->have_posts()) {
+                            $related_query->the_post();
+                            $related_image_url = get_the_post_thumbnail_url(get_the_ID(), 'medium');
+                            $related_title = get_the_title();
+                            $related_reference = get_post_meta(get_the_ID(), 'reference', true);
+                            $related_categories = wp_get_post_terms(get_the_ID(), 'categorie', array("fields" => "names"));
+                ?>
+                            <div class="related-photo-card">
+                                <div class="related-photo-overlay">
+                                    <div class="related-photo-fullscreen">
+                                        <a href="#" data-full-url="<?php echo esc_url(get_the_post_thumbnail_url(get_the_ID(), 'full')); ?>" onclick="openLightbox(<?php echo $index; ?>)"><i class="fas fa-expand"></i></a>
+                                    </div>
+                                    <div class="related-photo-view">
+                                        <a href="?id=<?php echo get_the_ID(); ?>"><i class="fas fa-eye"></i></a>
+                                    </div>
+                                    <div class="related-photo-info">
+                                        <span class="related-photo-reference"><?php echo esc_html($related_reference); ?></span>
+                                        <span class="related-photo-category"><?php echo esc_html(implode(', ', $related_categories)); ?></span>
+                                    </div>
                                 </div>
-                    <?php
-                            }
-                            wp_reset_postdata();
-                        } else {
-                            echo '<p>Aucune photo connexe trouvée.</p>';
+                                <img src="<?php echo esc_url($related_image_url); ?>" alt="<?php echo esc_attr($related_title); ?>">
+                            </div>
+                <?php
                         }
+                        echo '</div>';
+                        wp_reset_postdata();
                     } else {
-                        echo '<p>Pas de catégories trouvées pour cette photo.</p>';
+                        echo '<p>Aucune photo connexe trouvée.</p>';
                     }
-                    ?>
-                </div>
+                } else {
+                    echo '<p>Pas de catégories trouvées pour cette photo.</p>';
+                }
+                ?>
+            </div>
 
-    <?php
+<?php
         } else {
             // Affiche un message si le post n'existe pas.
             echo '<p>Photo non trouvée.</p>';
@@ -175,4 +188,4 @@ if (isset($_GET['id'])) {
 
 // Appelle le pied de page du thème WordPress.
 get_footer();
-    ?>
+?>

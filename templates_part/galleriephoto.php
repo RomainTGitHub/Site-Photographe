@@ -1,90 +1,103 @@
-<div class="gallery-container">
-	<div class="filters">
-		<!-- Premier menu déroulant -->
-		<div id="categories-dropdown" class="dropdown">
-			<div class="dropdown-selected">Catégories</div>
-			<ul class="dropdown-menu">
-				<li class="dropdown-item" data-value="reception">Réception</li>
-				<li class="dropdown-item" data-value="television">Télévision</li>
-				<li class="dropdown-item" data-value="concert">Concert</li>
-				<li class="dropdown-item" data-value="mariage">Mariage</li>
-			</ul>
-		</div>
-		<!-- Deuxième menu déroulant -->
-		<div id="formats-dropdown" class="dropdown">
-			<div class="dropdown-selected">Formats</div>
-			<ul class="dropdown-menu">
-				<li class="dropdown-item" data-value="portrait">Portrait</li>
-				<li class="dropdown-item" data-value="paysage">Paysage</li>
-			</ul>
-		</div>
-		<!-- Troisiéme menu déroulant -->
-		<div id="order-by-dropdown" class="dropdown">
-			<div class="dropdown-selected">Trier par</div>
-			<ul class="dropdown-menu">
-				<li class="dropdown-item" data-value="recentes">A partir des plus récentes</li>
-				<li class="dropdown-item" data-value="anciennes">A partir des plus anciennes</li>
-			</ul>
-		</div>
+<!-- Premier menu déroulant -->
+<?php
+// Récupère les termes de la taxonomie 'categorie'.
+$categories = get_terms(array(
+	'taxonomy' => 'categorie',
+	'hide_empty' => false,
+));
+
+// Récupère les termes de la taxonomie 'format'.
+$formats = get_terms(array(
+	'taxonomy' => 'format',
+	'hide_empty' => false,
+));
+?>
+
+<div class="dropdowns-container">
+	<!-- Menu déroulant des catégories -->
+	<div id="categories-dropdown" class="dropdown">
+		<div class="dropdown-selected">Catégories</div>
+		<ul class="dropdown-menu">
+			<?php foreach ($categories as $category) : ?>
+				<li class="dropdown-item" data-value="<?php echo esc_attr($category->slug); ?>">
+					<?php echo esc_html($category->name); ?>
+				</li>
+			<?php endforeach; ?>
+		</ul>
 	</div>
-
-	<div class="gallery-grid">
-		<?php
-		// Récupérer les filtres et les utiliser dans la requête WP
-		$category_filter = isset($_GET['category']) ? sanitize_text_field($_GET['category']) : '';
-		$format_filter = isset($_GET['format']) ? sanitize_text_field($_GET['format']) : '';
-		$order_by = isset($_GET['order']) ? sanitize_text_field($_GET['order']) : 'desc';
-
-		// Configurer les arguments de la requête
-		$args = array(
-			'post_type' => 'photo',
-			'posts_per_page' => 8,
-			'orderby' => 'date',
-			'order' => ($order_by === 'anciennes') ? 'ASC' : 'DESC',
-			'tax_query' => array('relation' => 'AND'),
-			'meta_query' => array()
-		);
-
-		// Ajouter le filtre de catégorie à la requête
-		if (!empty($category_filter)) {
-			$args['tax_query'][] = array(
-				'taxonomy' => 'categorie',
-				'field' => 'slug',
-				'terms' => $category_filter,
-			);
-		}
-
-		// Ajouter le filtre de format à la requête
-		if (!empty($format_filter)) {
-			$args['tax_query'][] = array(
-				'taxonomy' => 'format',
-				'field' => 'slug',
-				'terms' => $format_filter,
-			);
-		}
-
-		$query = new WP_Query($args);
-		if ($query->have_posts()) :
-			while ($query->have_posts()) : $query->the_post();
-				// Obtenir l'ID du post actuel
-				$post_id = get_the_ID();
-				// Créer le lien vers infophoto.php avec l'ID du post
-				$info_photo_link = get_template_directory_uri() . "/infophoto.php?id=" . $post_id;
-		?>
-				<div class="gallery-item">
-					<a href="<?php echo esc_url($info_photo_link); ?>">
-						<?php the_post_thumbnail('large'); ?>
-					</a>
-				</div>
-			<?php endwhile;
-			wp_reset_postdata();
-		else : ?>
-			<p>Aucune photo trouvée.</p>
-		<?php endif; ?>
+	<!-- Menu déroulant des formats -->
+	<div id="formats-dropdown" class="dropdown">
+		<div class="dropdown-selected">Formats</div>
+		<ul class="dropdown-menu">
+			<?php foreach ($formats as $format) : ?>
+				<li class="dropdown-item" data-value="<?php echo esc_attr($format->slug); ?>">
+					<?php echo esc_html($format->name); ?>
+				</li>
+			<?php endforeach; ?>
+		</ul>
 	</div>
-
-	<div class="load-more">
-		<button id="load-more-button">Charger plus</button>
+	<!-- Menu déroulant de tri -->
+	<div id="order-by-dropdown" class="dropdown">
+		<div class="dropdown-selected">Trier par</div>
+		<ul class="dropdown-menu">
+			<li class="dropdown-item" data-value="recentes">A partir des plus récentes</li>
+			<li class="dropdown-item" data-value="anciennes">A partir des plus anciennes</li>
+		</ul>
 	</div>
 </div>
+
+<?php
+// Récupère les posts du type 'photo' pour la galerie.
+$args = array(
+	'post_type' => 'photo', // Remplacez 'photo' par le slug correct si différent
+	'posts_per_page' => -1,
+	'post_status' => 'publish'
+);
+$query = new WP_Query($args);
+if ($query->have_posts()) :
+?>
+	<div id="gallery-grid" class="gallery-grid">
+		<?php
+		$count = 0;
+		while ($query->have_posts()) : $query->the_post();
+			if ($count >= 8) break; // Afficher seulement les 8 premières images
+			$count++;
+			// Récupère les informations nécessaires pour chaque post.
+			$post_id = get_the_ID();
+			$image_url = get_the_post_thumbnail_url($post_id, 'medium'); // Utilisez 'medium' pour la taille de la vignette
+			$image_full_url = get_the_post_thumbnail_url($post_id, 'full'); // Utilisez 'full' pour la taille complète
+			$title = get_the_title($post_id);
+			$reference = get_post_meta($post_id, 'reference', true);
+			$categories = wp_get_post_terms($post_id, 'categorie', array("fields" => "names"));
+		?>
+			<div class="related-photo-card">
+				<div class="related-photo-overlay">
+					<div class="related-photo-fullscreen">
+						<a href="#" data-full-url="<?php echo esc_url($image_full_url); ?>" onclick="openLightbox(<?php echo $post_id; ?>); return false;"><i class="fas fa-expand"></i></a>
+					</div>
+					<div class="related-photo-view">
+						<a href="<?php echo get_template_directory_uri() . '/infophoto.php?id=' . $post_id; ?>"><i class="fas fa-eye"></i></a>
+					</div>
+					<div class="related-photo-info">
+						<span class="related-photo-reference"><?php echo esc_html($reference); ?></span>
+						<span class="related-photo-category"><?php echo esc_html(implode(', ', $categories)); ?></span>
+					</div>
+				</div>
+				<img src="<?php echo esc_url($image_url); ?>" alt="<?php echo esc_attr($title); ?>">
+			</div>
+		<?php endwhile; ?>
+	</div>
+
+	<?php if ($query->post_count > 8) : ?>
+		<div class="load-more-container">
+			<button id="load-more" class="load-more-button">Charger plus</button>
+		</div>
+	<?php endif; ?>
+
+<?php
+else :
+	echo '<p>Aucune photo trouvée.</p>';
+endif;
+wp_reset_postdata();
+?>
 </div> <!-- Ferme la div main-container -->

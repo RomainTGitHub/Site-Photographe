@@ -122,3 +122,47 @@ function add_google_fonts()
     wp_enqueue_style('Poppins', 'https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap', false);
 }
 add_action('wp_enqueue_scripts', 'add_google_fonts');
+
+function load_more_photos()
+{
+    $offset = intval($_POST['offset']);
+    $args = array(
+        'post_type' => 'photo', // Remplacez 'photo' par le slug correct si différent
+        'posts_per_page' => 8,
+        'post_status' => 'publish',
+        'offset' => $offset
+    );
+    $query = new WP_Query($args);
+    if ($query->have_posts()) :
+        while ($query->have_posts()) : $query->the_post();
+            // Récupère les informations nécessaires pour chaque post.
+            $post_id = get_the_ID();
+            $image_url = get_the_post_thumbnail_url($post_id, 'medium'); // Utilisez 'medium' pour la taille de la vignette
+            $image_full_url = get_the_post_thumbnail_url($post_id, 'full'); // Utilisez 'full' pour la taille complète
+            $title = get_the_title($post_id);
+            $reference = get_post_meta($post_id, 'reference', true);
+            $categories = wp_get_post_terms($post_id, 'categorie', array("fields" => "names"));
+?>
+            <div class="related-photo-card">
+                <div class="related-photo-overlay">
+                    <div class="related-photo-fullscreen">
+                        <a href="#" data-full-url="<?php echo esc_url($image_full_url); ?>" onclick="openLightbox(<?php echo $post_id; ?>); return false;"><i class="fas fa-expand"></i></a>
+                    </div>
+                    <div class="related-photo-view">
+                        <a href="<?php echo get_template_directory_uri() . '/infophoto.php?id=' . $post_id; ?>"><i class="fas fa-eye"></i></a>
+                    </div>
+                    <div class="related-photo-info">
+                        <span class="related-photo-reference"><?php echo esc_html($reference); ?></span>
+                        <span class="related-photo-category"><?php echo esc_html(implode(', ', $categories)); ?></span>
+                    </div>
+                </div>
+                <img src="<?php echo esc_url($image_url); ?>" alt="<?php echo esc_attr($title); ?>">
+            </div>
+<?php
+        endwhile;
+    endif;
+    wp_reset_postdata();
+    die();
+}
+add_action('wp_ajax_load_more_photos', 'load_more_photos');
+add_action('wp_ajax_nopriv_load_more_photos', 'load_more_photos');

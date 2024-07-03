@@ -18,6 +18,7 @@ get_header(); ?>
     <div class="header-text">Photographe Event</div>
 </div>
 </header>
+<div id="overlay" style="display: none;"></div>
 
 <?php include get_template_directory() . '/templates_part/galleriephoto.php';
 

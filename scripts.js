@@ -48,50 +48,6 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 document.addEventListener('DOMContentLoaded', function () {
-    const categoriesDropdown = document.getElementById('categories-dropdown');
-    const formatsDropdown = document.getElementById('formats-dropdown');
-    const orderByDropdown = document.getElementById('order-by-dropdown');
-
-    function updateGallery() {
-        const category = categoriesDropdown.querySelector('.dropdown-selected').getAttribute('data-value');
-        const format = formatsDropdown.querySelector('.dropdown-selected').getAttribute('data-value');
-        const order = orderByDropdown.querySelector('.dropdown-selected').getAttribute('data-value');
-
-        let url = new URL(window.location.href);
-        if (category) {
-            url.searchParams.set('category', category);
-        } else {
-            url.searchParams.delete('category');
-        }
-
-        if (format) {
-            url.searchParams.set('format', format);
-        } else {
-            url.searchParams.delete('format');
-        }
-
-        if (order) {
-            url.searchParams.set('order', order);
-        } else {
-            url.searchParams.delete('order');
-        }
-
-        window.location.href = url.toString();
-    }
-
-    [categoriesDropdown, formatsDropdown, orderByDropdown].forEach(dropdown => {
-        dropdown.addEventListener('click', function (e) {
-            if (e.target.classList.contains('dropdown-item')) {
-                const selected = dropdown.querySelector('.dropdown-selected');
-                selected.textContent = e.target.textContent;
-                selected.setAttribute('data-value', e.target.getAttribute('data-value'));
-                updateGallery();
-            }
-        });
-    });
-});
-
-document.addEventListener('DOMContentLoaded', function () {
     const hamburger = document.querySelector('.hamburger');
     const navMenu = document.querySelector('.nav-menu');
     const hamburgerIcon = document.querySelector('.hamburger-icon');
@@ -118,19 +74,31 @@ document.addEventListener('DOMContentLoaded', function () {
 // Utilise jQuery pour gérer l'affichage du modal de contact et les événements de formulaire.
 jQuery(document).ready(function ($) {
     var modal = $('#contactModal');
-    var btn = $('#contactBtn');
+    var btn = $('#contactBtn'); // Bouton existant avec ID
+    var boutons = $('.open-modal'); // Boutons avec la classe open-modal
     var overlay = $('#overlay');
     var formMessage = $('#form-message');
 
-    // Ouvre la modale
-    btn.on('click', function () {
-        var photoReference = $(this).data('reference');
+    // Fonction pour ouvrir la modale
+    function openModal(button) {
+        var photoReference = button.data('reference');
         if (photoReference) {
             $('#photo-ref').val(photoReference);
         }
         modal.addClass('show');
         modal.css('display', 'flex');
         overlay.css('display', 'block'); // Affiche l'overlay
+    }
+
+    // Ouvre la modale lorsque le bouton est cliqué
+    btn.on('click', function (event) {
+        event.preventDefault(); // Empêche le comportement par défaut du lien
+        openModal($(this));
+    });
+
+    boutons.on('click', function (event) {
+        event.preventDefault(); // Empêche le comportement par défaut du lien
+        openModal($(this));
     });
 
     // Ferme la modale et l'overlay lorsque l'utilisateur clique en dehors de la modale
@@ -162,6 +130,50 @@ jQuery(document).ready(function ($) {
     // Empêche le rafraîchissement de la page à la soumission du formulaire
     $(document).on('submit', '.wpcf7-form', function (e) {
         e.preventDefault();
+    });
+});
+
+// Script pour la lightbox //
+
+let currentSlideIndex = 0;
+const slides = document.querySelectorAll('.related-photo-card');
+const lightbox = document.getElementById('lightbox');
+const lightboxImg = document.getElementById('lightbox-img');
+const lightboxReference = document.getElementById('lightbox-reference');
+const lightboxCategory = document.getElementById('lightbox-category');
+
+function openLightbox(index) {
+    currentSlideIndex = index;
+    const slide = slides[currentSlideIndex];
+    const imgSrc = slide.querySelector('.related-photo-fullscreen a').getAttribute('data-full-url');
+    const reference = slide.querySelector('.related-photo-reference').textContent;
+    const category = slide.querySelector('.related-photo-category').textContent;
+
+    lightboxImg.src = imgSrc;
+    lightboxReference.textContent = reference;
+    lightboxCategory.textContent = category;
+
+    lightbox.style.display = 'flex';
+}
+
+function closeLightbox() {
+    lightbox.style.display = 'none';
+}
+
+function changeSlide(n) {
+    currentSlideIndex += n;
+    if (currentSlideIndex < 0) {
+        currentSlideIndex = slides.length - 1;
+    } else if (currentSlideIndex >= slides.length) {
+        currentSlideIndex = 0;
+    }
+    openLightbox(currentSlideIndex);
+}
+
+document.querySelectorAll('.related-photo-fullscreen a').forEach((button, index) => {
+    button.addEventListener('click', (e) => {
+        e.preventDefault();
+        openLightbox(index);
     });
 });
 
