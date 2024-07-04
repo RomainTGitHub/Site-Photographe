@@ -123,16 +123,6 @@ function add_google_fonts()
 }
 add_action('wp_enqueue_scripts', 'add_google_fonts');
 
-function register_custom_rest_endpoints()
-{
-    register_rest_route('custom/v1', '/photos/', array(
-        'methods' => 'GET',
-        'callback' => 'get_custom_photos',
-        'permission_callback' => '__return_true',
-    ));
-}
-add_action('rest_api_init', 'register_custom_rest_endpoints');
-
 function enqueue_custom_scripts()
 {
     wp_enqueue_script('custom-scripts', get_template_directory_uri() . '/js/scripts.js', array('jquery'), null, true);
@@ -146,6 +136,12 @@ add_action('wp_enqueue_scripts', 'enqueue_custom_scripts');
 
 function register_custom_rest_endpoints()
 {
+    register_rest_route('custom/v1', '/photos/', array(
+        'methods' => 'GET',
+        'callback' => 'get_custom_photos',
+        'permission_callback' => '__return_true',
+    ));
+    add_action('rest_api_init', 'register_custom_rest_endpoints');
     add_action('wp_ajax_load_photos', 'get_custom_photos');
     add_action('wp_ajax_nopriv_load_photos', 'get_custom_photos');
 }
@@ -198,7 +194,7 @@ function get_custom_photos()
             $posts[] = array(
                 'id' => $post_id,
                 'title' => get_the_title(),
-                'image_url' => get_the_post_thumbnail_url($post_id, 'medium'),
+                'image_url' => get_the_post_thumbnail_url($post_id, 'medium_large'),
                 'image_full_url' => get_the_post_thumbnail_url($post_id, 'full'),
                 'reference' => get_post_meta($post_id, 'reference', true),
                 'categories' => wp_get_post_terms($post_id, 'categorie', array('fields' => 'names')),

@@ -186,10 +186,10 @@ jQuery(document).ready(function ($) {
                         photosHtml += '<div class="related-photo-card">';
                         photosHtml += '<div class="related-photo-overlay">';
                         photosHtml += '<div class="related-photo-fullscreen">';
-                        photosHtml += '<a href="#" data-full-url="' + photo.image_full_url + '" onclick="openLightbox(' + photo.id + '); return false;"><i class="fas fa-expand"></i></a>';
+                        photosHtml += '<a href="#" class="open-lightbox" data-full-url="' + photo.image_full_url + '"><i class="fas fa-expand"></i></a>';
                         photosHtml += '</div>';
                         photosHtml += '<div class="related-photo-view">';
-                        photosHtml += '<a href="' + my_ajax_obj.site_url + '/infophoto.php?id=' + photo.id + '"><i class="fas fa-eye"></i></a>';
+                        photosHtml += '<a href="' + my_ajax_obj.site_url + '/infophoto?id=' + photo.id + '"><i class="fas fa-eye"></i></a>';
                         photosHtml += '</div>';
                         photosHtml += '<div class="related-photo-info">';
                         photosHtml += '<span class="related-photo-reference">' + photo.reference + '</span>';
@@ -202,11 +202,23 @@ jQuery(document).ready(function ($) {
                     $('#gallery-grid').append(photosHtml);
                     offset += data.length;
                 } else {
+                    if (offset === 0) {
+                        $('#gallery-grid').html('<p>Aucune photo trouvée.</p>');
+                    }
                     $('#load-more').hide();
                 }
+            },
+            error: function () {
+                $('#gallery-grid').html('<p>Une erreur est survenue lors du chargement des photos.</p>');
             }
         });
     }
+
+    $(document).on('click', '.open-lightbox', function (e) {
+        e.preventDefault();
+        var fullUrl = $(this).data('full-url');
+        openLightbox(fullUrl);
+    });
 
     $('.dropdown-item').click(function () {
         var dropdown = $(this).closest('.dropdown');
@@ -234,3 +246,68 @@ jQuery(document).ready(function ($) {
     loadPhotos();
 });
 
+
+jQuery(document).ready(function ($) {
+    var currentPhotoIndex = 0;
+    var photos = [];
+
+    // Fonction pour ouvrir la lightbox
+    function openLightbox(index) {
+        var photo = photos[index];
+        $('#lightbox-img').attr('src', photo.fullUrl);
+        $('#lightbox-reference').text(photo.reference);
+        $('#lightbox-category').text(photo.category);
+        $('#lightbox').fadeIn();
+        currentPhotoIndex = index;
+    }
+
+    // Fonction pour fermer la lightbox
+    function closeLightbox() {
+        $('#lightbox').fadeOut();
+    }
+
+    // Fonction pour changer la photo dans la lightbox
+    function changePhoto(direction) {
+        currentPhotoIndex += direction;
+        if (currentPhotoIndex < 0) {
+            currentPhotoIndex = photos.length - 1;
+        } else if (currentPhotoIndex >= photos.length) {
+            currentPhotoIndex = 0;
+        }
+        openLightbox(currentPhotoIndex);
+    }
+
+    // Attache un événement de clic aux boutons d'ouverture de la lightbox
+    $(document).on('click', '.open-lightbox', function (e) {
+        e.preventDefault();
+        var index = $(this).data('index');
+        openLightbox(index);
+    });
+
+    // Attache des événements de clic aux boutons de navigation de la lightbox
+    $('.lightbox-prev').on('click', function () {
+        changePhoto(-1);
+    });
+
+    $('.lightbox-next').on('click', function () {
+        changePhoto(1);
+    });
+
+    // Attache un événement de clic au bouton de fermeture de la lightbox
+    $('.lightbox-close').on('click', function () {
+        closeLightbox();
+    });
+
+    // Initialise les photos (à faire après le chargement de vos photos dans le HTML)
+    $('.open-lightbox').each(function (index) {
+        var fullUrl = $(this).data('full-url');
+        var reference = $(this).data('reference');
+        var category = $(this).data('category');
+        photos.push({
+            fullUrl: fullUrl,
+            reference: reference,
+            category: category
+        });
+        $(this).data('index', index); // Assigne l'index de chaque photo
+    });
+});

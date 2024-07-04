@@ -49,37 +49,33 @@ $formats = get_terms(array(
 	</div>
 </div>
 
-<?php
-// Récupère les posts du type 'photo' pour la galerie.
-$args = array(
-	'post_type' => 'photo', // Remplacez 'photo' par le slug correct si différent
-	'posts_per_page' => -1,
-	'post_status' => 'publish'
-);
-$query = new WP_Query($args);
-if ($query->have_posts()) :
-?>
-	<div id="gallery-grid" class="gallery-grid">
-		<?php
+<div id="gallery-grid" class="gallery-grid">
+	<?php
+	$args = array(
+		'post_type' => 'photo',
+		'posts_per_page' => -1,
+		'post_status' => 'publish'
+	);
+	$query = new WP_Query($args);
+	if ($query->have_posts()) :
 		$count = 0;
 		while ($query->have_posts()) : $query->the_post();
 			if ($count >= 8) break; // Afficher seulement les 8 premières images
 			$count++;
-			// Récupère les informations nécessaires pour chaque post.
 			$post_id = get_the_ID();
-			$image_url = get_the_post_thumbnail_url($post_id, 'full'); // Utilisez 'medium' pour la taille de la vignette
-			$image_full_url = get_the_post_thumbnail_url($post_id, 'full'); // Utilisez 'full' pour la taille complète
+			$image_url = get_the_post_thumbnail_url($post_id, 'full');
+			$image_full_url = get_the_post_thumbnail_url($post_id, 'full');
 			$title = get_the_title($post_id);
 			$reference = get_post_meta($post_id, 'reference', true);
 			$categories = wp_get_post_terms($post_id, 'categorie', array("fields" => "names"));
-		?>
+	?>
 			<div class="related-photo-card">
 				<div class="related-photo-overlay">
 					<div class="related-photo-fullscreen">
-						<a href="#" data-full-url="<?php echo esc_url($image_full_url); ?>" onclick="openLightbox(<?php echo $post_id; ?>); return false;"><i class="fas fa-expand"></i></a>
+						<a href="#" class="open-lightbox" data-full-url="<?php echo esc_url($image_full_url); ?>" data-reference="<?php echo esc_html($reference); ?>" data-category="<?php echo esc_html(implode(', ', $categories)); ?>"><i class="fas fa-expand"></i></a>
 					</div>
 					<div class="related-photo-view">
-						<a href="<?php echo get_template_directory_uri() . '/infophoto.php?id=' . $post_id; ?>"><i class="fas fa-eye"></i></a>
+						<a href="<?php echo esc_url(home_url('/info-photo/?id=' . $post_id)); ?>"><i class="fas fa-eye"></i></a>
 					</div>
 					<div class="related-photo-info">
 						<span class="related-photo-reference"><?php echo esc_html($reference); ?></span>
@@ -89,18 +85,19 @@ if ($query->have_posts()) :
 				<img src="<?php echo esc_url($image_url); ?>" alt="<?php echo esc_attr($title); ?>">
 			</div>
 		<?php endwhile; ?>
-	</div>
+</div>
 
-	<?php if ($query->post_count > 8) : ?>
-		<div class="load-more-container">
-			<button id="load-more" class="load-more-button">Charger plus</button>
-		</div>
-	<?php endif; ?>
+<?php if ($query->post_count > 8) : ?>
+	<div class="load-more-container">
+		<button id="load-more" class="load-more-button">Charger plus</button>
+	</div>
+<?php endif; ?>
 
 <?php
-else :
-	echo '<p>Aucune photo trouvée.</p>';
-endif;
-wp_reset_postdata();
+	else :
+		echo '<p>Aucune photo trouvée.</p>';
+	endif;
+	wp_reset_postdata();
 ?>
+
 </div> <!-- Ferme la div main-container -->
