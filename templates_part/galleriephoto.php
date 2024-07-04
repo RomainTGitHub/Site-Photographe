@@ -83,7 +83,6 @@ $formats = get_terms(array(
 						<span class="related-photo-reference"><?php echo esc_html($reference); ?></span>
 						<span class="related-photo-category"><?php echo esc_html(implode(', ', $categories)); ?></span>
 						<span class="related-photo-format"><?php echo esc_html(implode(', ', $formats)); ?></span>
-						<span class="related-photo-date"><?php echo esc_html($date); ?> </span>
 					</div>
 				</div>
 				<img src="<?php echo esc_url($image_url); ?>" alt="<?php echo esc_attr($title); ?>">
