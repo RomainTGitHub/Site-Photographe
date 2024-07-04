@@ -139,25 +139,25 @@ if (isset($_GET['id'])) {
                     $related_query = new WP_Query($related_args);
 
                     if ($related_query->have_posts()) {
-                        echo '<div class="related-photos">';
+                        echo '<div class="related-photos infophoto-grid">';
                         while ($related_query->have_posts()) {
                             $related_query->the_post();
-                            $related_image_url = get_the_post_thumbnail_url(get_the_ID(), 'medium');
+                            $related_image_url = get_the_post_thumbnail_url(get_the_ID(), 'medium_large');
                             $related_title = get_the_title();
                             $related_reference = get_post_meta(get_the_ID(), 'reference', true);
                             $related_categories = wp_get_post_terms(get_the_ID(), 'categorie', array("fields" => "names"));
                 ?>
-                            <div class="related-photo-card">
-                                <div class="related-photo-overlay">
-                                    <div class="related-photo-fullscreen">
+                            <div class="related-photo-card infophoto-card">
+                                <div class="related-photo-overlay infophoto-overlay">
+                                    <div class="related-photo-fullscreen infophoto-fullscreen">
                                         <a href="#" data-full-url="<?php echo esc_url(get_the_post_thumbnail_url(get_the_ID(), 'full')); ?>" onclick="openLightbox(<?php echo $index; ?>)"><i class="fas fa-expand"></i></a>
                                     </div>
-                                    <div class="related-photo-view">
+                                    <div class="related-photo-view infophoto-view">
                                         <a href="?id=<?php echo get_the_ID(); ?>"><i class="fas fa-eye"></i></a>
                                     </div>
-                                    <div class="related-photo-info">
-                                        <span class="related-photo-reference"><?php echo esc_html($related_reference); ?></span>
-                                        <span class="related-photo-category"><?php echo esc_html(implode(', ', $related_categories)); ?></span>
+                                    <div class="related-photo-info infophoto-info">
+                                        <span class="related-photo-reference infophoto-reference"><?php echo esc_html($related_reference); ?></span>
+                                        <span class="related-photo-category infophoto-category"><?php echo esc_html(implode(', ', $related_categories)); ?></span>
                                     </div>
                                 </div>
                                 <img src="<?php echo esc_url($related_image_url); ?>" alt="<?php echo esc_attr($related_title); ?>">

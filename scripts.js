@@ -78,6 +78,7 @@ jQuery(document).ready(function ($) {
     var boutons = $('.open-modal'); // Boutons avec la classe open-modal
     var overlay = $('#overlay');
     var formMessage = $('#form-message');
+    var form = $('#contactForm'); // Sélectionne le formulaire par ID
 
     // Fonction pour ouvrir la modale
     function openModal(button) {
@@ -110,25 +111,8 @@ jQuery(document).ready(function ($) {
         }
     });
 
-    // Gestion des événements du formulaire Contact Form 7 avec AJAX
-    document.addEventListener('wpcf7mailsent', function (event) {
-        formMessage.html('<p class="success">Formulaire envoyé avec succès !</p>');
-    }, false);
-
-    document.addEventListener('wpcf7invalid', function (event) {
-        formMessage.html('<p class="error">Veuillez vérifier les champs du formulaire.</p>');
-    }, false);
-
-    document.addEventListener('wpcf7spam', function (event) {
-        formMessage.html('<p class="error">Le message a été identifié comme spam.</p>');
-    }, false);
-
-    document.addEventListener('wpcf7mailfailed', function (event) {
-        formMessage.html('<p class="error">Échec de l\'envoi du message.</p>');
-    }, false);
-
     // Empêche le rafraîchissement de la page à la soumission du formulaire
-    $(document).on('submit', '.wpcf7-form', function (e) {
+    form.on('submit', function (e) {
         e.preventDefault();
     });
 });
@@ -175,5 +159,78 @@ document.querySelectorAll('.related-photo-fullscreen a').forEach((button, index)
         e.preventDefault();
         openLightbox(index);
     });
+});
+
+//Script pour le tri des photos et le bouton charger plus //
+
+jQuery(document).ready(function ($) {
+    var offset = 0;
+    var category = '';
+    var format = '';
+    var order = '';
+
+    function loadPhotos() {
+        $.ajax({
+            url: my_ajax_obj.ajax_url,
+            data: {
+                action: 'load_photos',
+                category: category,
+                format: format,
+                order: order,
+                offset: offset
+            },
+            success: function (data) {
+                if (data.length > 0) {
+                    var photosHtml = '';
+                    $.each(data, function (index, photo) {
+                        photosHtml += '<div class="related-photo-card">';
+                        photosHtml += '<div class="related-photo-overlay">';
+                        photosHtml += '<div class="related-photo-fullscreen">';
+                        photosHtml += '<a href="#" data-full-url="' + photo.image_full_url + '" onclick="openLightbox(' + photo.id + '); return false;"><i class="fas fa-expand"></i></a>';
+                        photosHtml += '</div>';
+                        photosHtml += '<div class="related-photo-view">';
+                        photosHtml += '<a href="' + my_ajax_obj.site_url + '/infophoto.php?id=' + photo.id + '"><i class="fas fa-eye"></i></a>';
+                        photosHtml += '</div>';
+                        photosHtml += '<div class="related-photo-info">';
+                        photosHtml += '<span class="related-photo-reference">' + photo.reference + '</span>';
+                        photosHtml += '<span class="related-photo-category">' + photo.categories.join(', ') + '</span>';
+                        photosHtml += '</div>';
+                        photosHtml += '</div>';
+                        photosHtml += '<img src="' + photo.image_url + '" alt="' + photo.title + '">';
+                        photosHtml += '</div>';
+                    });
+                    $('#gallery-grid').append(photosHtml);
+                    offset += data.length;
+                } else {
+                    $('#load-more').hide();
+                }
+            }
+        });
+    }
+
+    $('.dropdown-item').click(function () {
+        var dropdown = $(this).closest('.dropdown');
+        var value = $(this).data('value');
+        dropdown.find('.dropdown-selected').text($(this).text());
+
+        if (dropdown.attr('id') === 'categories-dropdown') {
+            category = value;
+        } else if (dropdown.attr('id') === 'formats-dropdown') {
+            format = value;
+        } else if (dropdown.attr('id') === 'order-by-dropdown') {
+            order = value;
+        }
+
+        offset = 0;
+        $('#gallery-grid').empty();
+        $('#load-more').show();
+        loadPhotos();
+    });
+
+    $('#load-more').click(function () {
+        loadPhotos();
+    });
+
+    loadPhotos();
 });
 

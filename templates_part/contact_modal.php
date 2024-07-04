@@ -7,7 +7,7 @@
             </div>
             <div class="modal-body">
                 <form id="contactForm" class="wpcf7-form" data-config='{"ajax":true}'>
-                    <?php echo do_shortcode('[contact-form-7 id="497eaeb" title="Formulaire de contact 1"]'); ?>
+                    <?php echo do_shortcode('[contact-form-7 id="497eaeb" html_id="contactForm" title="Formulaire de contact 1"]'); ?>
                     <input type="hidden" id="photo-ref" name="photo-ref">
                     <div id="form-message"></div> <!-- Pour les messages de validation -->
                 </form>

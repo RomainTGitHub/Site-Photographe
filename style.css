@@ -1,6 +1,8 @@
 /* Styles globaux */
 body {
     margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 /* Conteneur principal */
@@ -192,25 +194,58 @@ body {
 }
 
 /* Styles de base pour le menu déroulant */
-.dropdown {
-    position: relative;
-    display: inline-block;
-    width: 200px;
-    font-family: Arial, sans-serif;
+.dropdowns-container {
+    display: flex;
+    justify-content: space-between;
+    /* Distribute space between items */
+    align-items: center;
+    /* Center items vertically */
+    padding: 20px;
+    margin-top: 46px;
+    margin-left: 60px;
+    margin-right: 60px;
 }
 
 .dropdown-container {
     display: flex;
+    justify-content: center;
+    /* Centrer horizontalement */
+    align-items: center;
+    /* Centrer verticalement */
+    gap: 20px;
+    /* Espace entre les éléments */
+    padding: 20px;
+}
+
+.left-dropdowns {
+    display: flex;
+    gap: 36px;
+    /* Space between left dropdowns */
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.taxonomies-dropdown {
+    display: flex;
+    gap: 20px;
+}
+
+.order-by-dropdown {
+    display: flex;
     flex-direction: row;
     align-items: center;
-    text-align: center;
+    /* Assurer l'alignement central vertical */
+    text-align: end;
 }
 
 .dropdown-selected {
     background-color: #fff;
     border: 1px solid #ccc;
     padding: 10px;
-    border-radius: 4px;
+    border-radius: 5px;
     cursor: pointer;
     position: relative;
     display: flex;
@@ -225,6 +260,8 @@ body {
     line-height: 18px;
     text-transform: uppercase;
     gap: 10px;
+    text-align: center;
+    width: 260px;
 }
 
 .dropdown-selected::after {
@@ -252,7 +289,7 @@ body {
     z-index: 1000;
     list-style: none;
     padding: 0;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
 .dropdown.open .dropdown-menu {
@@ -292,16 +329,188 @@ body {
 }
 
 /* Grille de la galerie */
-.gallery-container {
+
+.gallery-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
+    gap: 20px;
+    padding: 80px;
+    padding-top: 10px;
 }
 
 .gallery-item img {
     width: 100%;
     height: auto;
     display: block;
+}
+
+/* Cards */
+
+.related-photos-container {
+    margin-top: 20px;
+}
+
+.related-photos {
+    display: flex;
+    justify-content: space-around;
+}
+
+.related-photo-card {
+    position: relative;
+    width: 100%;
+    padding-top: 100%;
+    /* Maintient un ratio carré */
+    overflow: hidden;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    /* Ajoute un fond blanc pour les cartes */
+}
+
+.related-photo-card img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.related-photo-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    /* Augmentation de l'opacité pour rendre l'image plus sombre */
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 10;
+    /* Assure que la superposition est au-dessus de l'image */
+    pointer-events: none;
+    /* Désactive les interactions de la superposition */
+}
+
+.related-photo-card:hover .related-photo-overlay {
+    opacity: 1;
+    pointer-events: auto;
+    /* Réactive les interactions au survol */
+}
+
+.related-photo-card:hover img {
+    opacity: 0.7;
+}
+
+.related-photo-fullscreen {
+    align-self: flex-end;
+    margin: 10px;
+}
+
+.related-photo-fullscreen a {
+    color: white;
+    font-size: 1.5em;
+}
+
+.related-photo-view {
+    align-self: center;
+    margin: 10px;
+}
+
+.related-photo-view a {
+    color: white;
+    font-size: 2em;
+}
+
+.related-photo-info {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+.related-photo-reference {
+    font-size: 0.9em;
+}
+
+.related-photo-category {
+    font-size: 0.9em;
+}
+
+/* Cards page infophoto.php */
+
+/* Styles spécifiques pour les cartes de la page infophoto.php */
+/* Styles spécifiques pour les cartes de la page infophoto.php */
+.infophoto-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    /* 2 colonnes pour aligner les cartes horizontalement */
+    gap: 20px;
+    /* Espace entre les cartes */
+    padding: 20px;
+    margin: 0 40px;
+    /* Ajoute une marge de 40px à gauche et à droite */
+}
+
+.infophoto-card {
+    position: relative;
+    width: 100%;
+    padding-top: 100%;
+    /* Maintient un ratio carré */
+    overflow: hidden;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    /* Ajoute un fond blanc pour les cartes */
+}
+
+.infophoto-card img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.infophoto-card:hover .infophoto-overlay {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.infophoto-card:hover img {
+    opacity: 0.7;
+}
+
+.infophoto-fullscreen {
+    margin: 10px;
+}
+
+.infophoto-fullscreen a {
+    color: white;
+    font-size: 1.5em;
+}
+
+.infophoto-view {
+    margin: 10px;
+}
+
+.infophoto-view a {
+    color: white;
+    font-size: 2em;
+}
+
+.infophoto-info {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.infophoto-reference,
+.infophoto-category {
+    display: block;
+    margin-top: 5px;
+    font-size: 0.9em;
 }
 
 /* Bouton charger plus */
@@ -546,15 +755,17 @@ body.no-scroll {
     box-shadow: 0px 2px 1px 0px rgba(0, 0, 0, 0.02);
 }
 
-#form-message p {
+#form-message {
     margin-top: 10px;
+    font-size: 14px;
+    color: #333;
 }
 
-#form-message p.success {
+#form-message .success {
     color: green;
 }
 
-#form-message p.error {
+#form-message .error {
     color: red;
 }
 
@@ -596,93 +807,6 @@ body.no-scroll {
     color: #000;
 }
 
-.related-photos-container {
-    margin-top: 20px;
-}
-
-.related-photos {
-    display: flex;
-    justify-content: space-around;
-}
-
-.related-photo-card {
-    position: relative;
-    width: 300px;
-    height: 300px;
-    overflow: hidden;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-}
-
-.related-photo-card img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.related-photo-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    /* Augmentation de l'opacité pour rendre l'image plus sombre */
-    color: white;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    z-index: 10;
-    /* Assure que la superposition est au-dessus de l'image */
-    pointer-events: none;
-    /* Désactive les interactions de la superposition */
-}
-
-.related-photo-card:hover .related-photo-overlay {
-    opacity: 1;
-    pointer-events: auto;
-    /* Réactive les interactions au survol */
-}
-
-.related-photo-card:hover img {
-    opacity: 0.7;
-}
-
-.related-photo-fullscreen {
-    align-self: flex-end;
-    margin: 10px;
-}
-
-.related-photo-fullscreen a {
-    color: white;
-    font-size: 1.5em;
-}
-
-.related-photo-view {
-    align-self: center;
-    margin: 10px;
-}
-
-.related-photo-view a {
-    color: white;
-    font-size: 2em;
-}
-
-.related-photo-info {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px;
-}
-
-.related-photo-reference {
-    font-size: 0.9em;
-}
-
-.related-photo-category {
-    font-size: 0.9em;
-}
 
 /* Lightbox styles */
 .lightbox {
@@ -863,5 +987,12 @@ body.no-scroll {
         transform: translate(-26%, -50%) !important;
         line-height: normal;
         font-weight: 700;
+    }
+}
+
+@media (max-width: 480px) {
+    .gallery-grid {
+        grid-template-columns: 1fr;
+        /* 1 colonne pour petits écrans */
     }
 }

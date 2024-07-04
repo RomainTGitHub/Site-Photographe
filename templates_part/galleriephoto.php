@@ -1,4 +1,3 @@
-<!-- Premier menu déroulant -->
 <?php
 // Récupère les termes de la taxonomie 'categorie'.
 $categories = get_terms(array(
@@ -14,35 +13,39 @@ $formats = get_terms(array(
 ?>
 
 <div class="dropdowns-container">
-	<!-- Menu déroulant des catégories -->
-	<div id="categories-dropdown" class="dropdown">
-		<div class="dropdown-selected">Catégories</div>
-		<ul class="dropdown-menu">
-			<?php foreach ($categories as $category) : ?>
-				<li class="dropdown-item" data-value="<?php echo esc_attr($category->slug); ?>">
-					<?php echo esc_html($category->name); ?>
-				</li>
-			<?php endforeach; ?>
-		</ul>
+	<div class="left-dropdowns">
+		<!-- Menu déroulant des catégories -->
+		<div id="categories-dropdown" class="dropdown">
+			<div class="dropdown-selected">Catégories</div>
+			<ul class="dropdown-menu">
+				<?php foreach ($categories as $category) : ?>
+					<li class="dropdown-item" data-value="<?php echo esc_attr($category->slug); ?>">
+						<?php echo esc_html($category->name); ?>
+					</li>
+				<?php endforeach; ?>
+			</ul>
+		</div>
+		<!-- Menu déroulant des formats -->
+		<div id="formats-dropdown" class="dropdown">
+			<div class="dropdown-selected">Formats</div>
+			<ul class="dropdown-menu">
+				<?php foreach ($formats as $format) : ?>
+					<li class="dropdown-item" data-value="<?php echo esc_attr($format->slug); ?>">
+						<?php echo esc_html($format->name); ?>
+					</li>
+				<?php endforeach; ?>
+			</ul>
+		</div>
 	</div>
-	<!-- Menu déroulant des formats -->
-	<div id="formats-dropdown" class="dropdown">
-		<div class="dropdown-selected">Formats</div>
-		<ul class="dropdown-menu">
-			<?php foreach ($formats as $format) : ?>
-				<li class="dropdown-item" data-value="<?php echo esc_attr($format->slug); ?>">
-					<?php echo esc_html($format->name); ?>
-				</li>
-			<?php endforeach; ?>
-		</ul>
-	</div>
-	<!-- Menu déroulant de tri -->
-	<div id="order-by-dropdown" class="dropdown">
-		<div class="dropdown-selected">Trier par</div>
-		<ul class="dropdown-menu">
-			<li class="dropdown-item" data-value="recentes">A partir des plus récentes</li>
-			<li class="dropdown-item" data-value="anciennes">A partir des plus anciennes</li>
-		</ul>
+	<div class="right-dropdown">
+		<!-- Menu déroulant de tri -->
+		<div id="order-by-dropdown" class="dropdown">
+			<div class="dropdown-selected">Trier par</div>
+			<ul class="dropdown-menu">
+				<li class="dropdown-item" data-value="recentes">A partir des plus récentes</li>
+				<li class="dropdown-item" data-value="anciennes">A partir des plus anciennes</li>
+			</ul>
+		</div>
 	</div>
 </div>
 
@@ -64,7 +67,7 @@ if ($query->have_posts()) :
 			$count++;
 			// Récupère les informations nécessaires pour chaque post.
 			$post_id = get_the_ID();
-			$image_url = get_the_post_thumbnail_url($post_id, 'medium'); // Utilisez 'medium' pour la taille de la vignette
+			$image_url = get_the_post_thumbnail_url($post_id, 'full'); // Utilisez 'medium' pour la taille de la vignette
 			$image_full_url = get_the_post_thumbnail_url($post_id, 'full'); // Utilisez 'full' pour la taille complète
 			$title = get_the_title($post_id);
 			$reference = get_post_meta($post_id, 'reference', true);

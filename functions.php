@@ -123,46 +123,91 @@ function add_google_fonts()
 }
 add_action('wp_enqueue_scripts', 'add_google_fonts');
 
-function load_more_photos()
+function register_custom_rest_endpoints()
 {
-    $offset = intval($_POST['offset']);
-    $args = array(
-        'post_type' => 'photo', // Remplacez 'photo' par le slug correct si différent
-        'posts_per_page' => 8,
-        'post_status' => 'publish',
-        'offset' => $offset
-    );
-    $query = new WP_Query($args);
-    if ($query->have_posts()) :
-        while ($query->have_posts()) : $query->the_post();
-            // Récupère les informations nécessaires pour chaque post.
-            $post_id = get_the_ID();
-            $image_url = get_the_post_thumbnail_url($post_id, 'medium'); // Utilisez 'medium' pour la taille de la vignette
-            $image_full_url = get_the_post_thumbnail_url($post_id, 'full'); // Utilisez 'full' pour la taille complète
-            $title = get_the_title($post_id);
-            $reference = get_post_meta($post_id, 'reference', true);
-            $categories = wp_get_post_terms($post_id, 'categorie', array("fields" => "names"));
-?>
-            <div class="related-photo-card">
-                <div class="related-photo-overlay">
-                    <div class="related-photo-fullscreen">
-                        <a href="#" data-full-url="<?php echo esc_url($image_full_url); ?>" onclick="openLightbox(<?php echo $post_id; ?>); return false;"><i class="fas fa-expand"></i></a>
-                    </div>
-                    <div class="related-photo-view">
-                        <a href="<?php echo get_template_directory_uri() . '/infophoto.php?id=' . $post_id; ?>"><i class="fas fa-eye"></i></a>
-                    </div>
-                    <div class="related-photo-info">
-                        <span class="related-photo-reference"><?php echo esc_html($reference); ?></span>
-                        <span class="related-photo-category"><?php echo esc_html(implode(', ', $categories)); ?></span>
-                    </div>
-                </div>
-                <img src="<?php echo esc_url($image_url); ?>" alt="<?php echo esc_attr($title); ?>">
-            </div>
-<?php
-        endwhile;
-    endif;
-    wp_reset_postdata();
-    die();
+    register_rest_route('custom/v1', '/photos/', array(
+        'methods' => 'GET',
+        'callback' => 'get_custom_photos',
+        'permission_callback' => '__return_true',
+    ));
 }
-add_action('wp_ajax_load_more_photos', 'load_more_photos');
-add_action('wp_ajax_nopriv_load_more_photos', 'load_more_photos');
+add_action('rest_api_init', 'register_custom_rest_endpoints');
+
+function enqueue_custom_scripts()
+{
+    wp_enqueue_script('custom-scripts', get_template_directory_uri() . '/js/scripts.js', array('jquery'), null, true);
+
+    wp_localize_script('custom-scripts', 'my_ajax_obj', array(
+        'ajax_url' => admin_url('admin-ajax.php'),
+        'site_url' => get_site_url()
+    ));
+}
+add_action('wp_enqueue_scripts', 'enqueue_custom_scripts');
+
+function register_custom_rest_endpoints()
+{
+    add_action('wp_ajax_load_photos', 'get_custom_photos');
+    add_action('wp_ajax_nopriv_load_photos', 'get_custom_photos');
+}
+
+function get_custom_photos()
+{
+    $category = isset($_GET['category']) ? $_GET['category'] : '';
+    $format = isset($_GET['format']) ? $_GET['format'] : '';
+    $order = isset($_GET['order']) ? $_GET['order'] : '';
+    $offset = isset($_GET['offset']) ? $_GET['offset'] : 0;
+
+    $args = array(
+        'post_type' => 'photo',
+        'posts_per_page' => 8,
+        'offset' => $offset,
+        'post_status' => 'publish',
+    );
+
+    if ($category) {
+        $args['tax_query'][] = array(
+            'taxonomy' => 'categorie',
+            'field' => 'slug',
+            'terms' => $category,
+        );
+    }
+
+    if ($format) {
+        $args['tax_query'][] = array(
+            'taxonomy' => 'format',
+            'field' => 'slug',
+            'terms' => $format,
+        );
+    }
+
+    if ($order == 'recentes') {
+        $args['orderby'] = 'date';
+        $args['order'] = 'DESC';
+    } elseif ($order == 'anciennes') {
+        $args['orderby'] = 'date';
+        $args['order'] = 'ASC';
+    }
+
+    $query = new WP_Query($args);
+    $posts = array();
+
+    if ($query->have_posts()) {
+        while ($query->have_posts()) {
+            $query->the_post();
+            $post_id = get_the_ID();
+            $posts[] = array(
+                'id' => $post_id,
+                'title' => get_the_title(),
+                'image_url' => get_the_post_thumbnail_url($post_id, 'medium'),
+                'image_full_url' => get_the_post_thumbnail_url($post_id, 'full'),
+                'reference' => get_post_meta($post_id, 'reference', true),
+                'categories' => wp_get_post_terms($post_id, 'categorie', array('fields' => 'names')),
+            );
+        }
+    }
+
+    wp_reset_postdata();
+    wp_send_json($posts);
+}
+
+add_action('init', 'register_custom_rest_endpoints');
