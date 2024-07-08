@@ -43,6 +43,10 @@ if (isset($_GET['id'])) {
         $prev_id = $posts[$prev_index];
         $next_id = $posts[$next_index];
 
+        // Récupère les URLs des images de prévisualisation pour les posts précédents et suivants
+        $prev_image_url = get_the_post_thumbnail_url($prev_id, 'thumbnail');
+        $next_image_url = get_the_post_thumbnail_url($next_id, 'thumbnail');
+
         // Récupère les informations du post correspondant à l'identifiant.
         $post = get_post($post_id);
 
@@ -65,60 +69,73 @@ if (isset($_GET['id'])) {
             // Utilise get_the_date() pour obtenir l'année de publication du post.
             $year = get_the_date('Y', $post_id);
 ?>
-            <!-- Affichage des informations de la photo -->
-            <div class="photo-info">
-                <!-- Affiche l'image de la photo -->
-                <img src="<?php echo esc_url($image_url); ?>" alt="<?php echo esc_attr($title); ?>">
-                <!-- Affiche le titre de la photo -->
-                <h1><?php echo esc_html($title); ?></h1>
-                <!-- Affiche la référence de la photo -->
-                <p><strong>Référence :</strong> <?php echo esc_html($reference); ?></p>
-                <!-- Affiche les catégories de la photo -->
-                <p><strong>Catégorie :</strong>
-                    <?php
-                    if (!empty($category_names)) {
-                        echo esc_html(implode(', ', $category_names));
-                    } else {
-                        echo 'Non défini';
-                    }
-                    ?>
-                </p>
-                <!-- Affiche les formats de la photo -->
-                <p><strong>Format :</strong>
-                    <?php
-                    if (!empty($formats)) {
-                        echo esc_html(implode(', ', $formats));
-                    } else {
-                        echo 'Non défini';
-                    }
-                    ?>
-                </p>
-                <!-- Affiche le type de la photo -->
-                <p><strong>Type :</strong>
-                    <?php
-                    if (!empty($types)) {
-                        echo esc_html($types);
-                    } else {
-                        echo 'Non défini';
-                    }
-                    ?>
-                </p>
-                <!-- Affiche l'année de la photo -->
-                <p><strong>Année :</strong> <?php echo esc_html($year); ?></p>
-            </div>
-            <p>Cette photo vous intéresse?</p>
-            <div id="overlay"></div>
-            <button id="contactBtn" class="cta-button" data-reference="<?php echo esc_attr($reference); ?>">Contact</button>
+            <div class="container">
+                <!-- Affichage des informations de la photo -->
+                <div class="photo-container">
+                    <div class="photo-info">
+                        <!-- Affiche le titre de la photo -->
+                        <h1 class="titre-infophoto"><?php echo esc_html($title); ?></h1>
+                        <!-- Affiche la référence de la photo -->
+                        <p class="texte-infophoto">Référence : <?php echo esc_html($reference); ?></p>
+                        <!-- Affiche les catégories de la photo -->
+                        <p class="texte-infophoto">Catégorie :
+                            <?php
+                            if (!empty($category_names)) {
+                                echo esc_html(implode(', ', $category_names));
+                            } else {
+                                echo 'Non défini';
+                            }
+                            ?>
+                        </p>
+                        <!-- Affiche les formats de la photo -->
+                        <p class="texte-infophoto">Format :
+                            <?php
+                            if (!empty($formats)) {
+                                echo esc_html(implode(', ', $formats));
+                            } else {
+                                echo 'Non défini';
+                            }
+                            ?>
+                        </p>
+                        <!-- Affiche le type de la photo -->
+                        <p class="texte-infophoto">Type :
+                            <?php
+                            if (!empty($types)) {
+                                echo esc_html($types);
+                            } else {
+                                echo 'Non défini';
+                            }
+                            ?>
+                        </p>
+                        <!-- Affiche l'année de la photo -->
+                        <p class="texte-infophoto">Année : <?php echo esc_html($year); ?></p>
+                    </div>
+                    <div class="photo-image">
+                        <!-- Affiche l'image de la photo -->
+                        <img src="<?php echo esc_url($image_url); ?>" alt="<?php echo esc_attr($title); ?>">
+                    </div>
+                </div>
+                <div class="interaction-container">
+                    <div class=cta-container>
+                        <p class="interesse-infophoto">Cette photo vous intéresse?</p>
+                        <button id="contactBtn" class="cta-button" data-reference="<?php echo esc_attr($reference); ?>">Contact</button>
+                    </div>
+                    <div class="navigation">
+                        <div id="nav-preview-container"></div> <!-- Ajout de la div pour les aperçus d'images -->
+                        <div class="navigation-buttons">
 
-            <!-- Flèches directionnelles -->
-            <div class="navigation-buttons">
-                <a href="?id=<?php echo $prev_id; ?>" class="nav-arrow"><i class="fas fa-arrow-left"></i></a>
-                <a href="?id=<?php echo $next_id; ?>" class="nav-arrow"><i class="fas fa-arrow-right"></i></a>
+                            <a href="?id=<?php echo $prev_id; ?>" class="nav-arrow prev" data-prev-image="<?php echo esc_url($prev_image_url); ?>"><i class="fas fa-arrow-left"></i></a>
+                            <a href="?id=<?php echo $next_id; ?>" class="nav-arrow next" data-next-image="<?php echo esc_url($next_image_url); ?>"><i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Ajout de deux photos aléatoires de la même catégorie -->
-            <h2>VOUS AIMEREZ AUSSI</h2>
             <div class="related-photos-container">
+
+                <h2 class="titre-part2infophoto">VOUS AIMEREZ AUSSI</h2>
+
                 <?php
                 if (!empty($category_slugs)) {
                     // Récupère deux posts aléatoires de la même catégorie
@@ -167,10 +184,10 @@ if (isset($_GET['id'])) {
                         echo '</div>';
                         wp_reset_postdata();
                     } else {
-                        echo '<p>Aucune photo connexe trouvée.</p>';
+                        echo '<p>Aucune photo de la même catégorie trouvée.</p>';
                     }
                 } else {
-                    echo '<p>Pas de catégories trouvées pour cette photo.</p>';
+                    echo '<p>Aucune catégories trouvées pour cette photo.</p>';
                 }
                 ?>
             </div>

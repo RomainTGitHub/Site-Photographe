@@ -207,3 +207,56 @@ function get_custom_photos()
 }
 
 add_action('init', 'register_custom_rest_endpoints');
+
+
+function load_more_photos()
+{
+    $page = isset($_POST['page']) ? intval($_POST['page']) : 1;
+    $posts_per_page = 8;
+
+    $args = array(
+        'post_type' => 'photo',
+        'posts_per_page' => $posts_per_page,
+        'paged' => $page,
+        'post_status' => 'publish'
+    );
+    $query = new WP_Query($args);
+
+    if ($query->have_posts()) :
+        while ($query->have_posts()) : $query->the_post();
+            $post_id = get_the_ID();
+            $image_url = get_the_post_thumbnail_url($post_id, 'full');
+            $image_full_url = get_the_post_thumbnail_url($post_id, 'full');
+            $title = get_the_title($post_id);
+            $reference = get_post_meta($post_id, 'reference', true);
+            $categories = wp_get_post_terms($post_id, 'categorie', array("fields" => "names"));
+            $formats = wp_get_post_terms($post_id, 'format', array("fields" => "names"));
+            $date = get_the_date('Y', $post_id);
+            $category_slugs = wp_list_pluck(wp_get_post_terms($post_id, 'categorie'), 'slug');
+            $format_slugs = wp_list_pluck(wp_get_post_terms($post_id, 'format'), 'slug');
+?>
+
+            <div class="related-photo-card" data-category="<?php echo esc_attr(implode(' ', $category_slugs)); ?>" data-format="<?php echo esc_attr(implode(' ', $format_slugs)); ?>" data-date="<?php echo esc_attr($date); ?>">
+                <div class="related-photo-overlay">
+                    <div class="related-photo-fullscreen">
+                        <a href="#" class="open-lightbox" data-full-url="<?php echo esc_url($image_full_url); ?>" data-reference="<?php echo esc_html($reference); ?>" data-category="<?php echo esc_html(implode(', ', $categories)); ?>"><i class="fas fa-expand"></i></a>
+                    </div>
+                    <div class="related-photo-view">
+                        <a href="<?php echo esc_url(home_url('/info-photo/?id=' . $post_id)); ?>"><i class="fas fa-eye"></i></a>
+                    </div>
+                    <div class="related-photo-info">
+                        <span class="related-photo-reference"><?php echo esc_html($reference); ?></span>
+                        <span class="related-photo-category"><?php echo esc_html(implode(', ', $categories)); ?></span>
+                        <span class="related-photo-format"><?php echo esc_html(implode(', ', $formats)); ?></span>
+                    </div>
+                </div>
+                <img src="<?php echo esc_url($image_url); ?>" alt="<?php echo esc_attr($title); ?>">
+            </div>
+<?php
+        endwhile;
+    endif;
+    wp_reset_postdata();
+    die();
+}
+add_action('wp_ajax_load_more_photos', 'load_more_photos');
+add_action('wp_ajax_nopriv_load_more_photos', 'load_more_photos');

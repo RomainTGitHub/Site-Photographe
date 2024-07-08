@@ -57,6 +57,10 @@ $formats = get_terms(array(
 		'post_status' => 'publish'
 	);
 	$query = new WP_Query($args);
+
+	$all_photos = array();
+
+
 	if ($query->have_posts()) :
 		$count = 0;
 		while ($query->have_posts()) : $query->the_post();
@@ -68,6 +72,13 @@ $formats = get_terms(array(
 			$title = get_the_title($post_id);
 			$reference = get_post_meta($post_id, 'reference', true);
 			$categories = wp_get_post_terms($post_id, 'categorie', array("fields" => "names"));
+			$all_photos[] = array(
+				'id' => $post_id,
+				'fullUrl' => $image_url,
+				'title' => $title,
+				'reference' => $reference,
+				'category' => implode(', ', $categories)
+			);
 			$formats = wp_get_post_terms($post_id, 'format', array("fields" => "names"));
 			$date = get_the_date('Y', $post_id);
 	?>
@@ -104,75 +115,8 @@ $formats = get_terms(array(
 ?>
 
 <script>
-	jQuery(document).ready(function($) {
-		var offset = 8;
-		var category = '';
-		var format = '';
-		var order = '';
-
-		function filterPhotos() {
-			var filteredCards = $('.related-photo-card').hide(); // Masquer toutes les cartes
-
-			filteredCards = filteredCards.filter(function() {
-				var categoryMatch = true;
-				var formatMatch = true;
-
-				if (category) {
-					categoryMatch = $(this).find('.related-photo-category').text().toLowerCase().indexOf(category.toLowerCase()) !== -1;
-				}
-				if (format) {
-					formatMatch = $(this).find('.related-photo-format').text().toLowerCase().indexOf(format.toLowerCase()) !== -1;
-				}
-
-				return categoryMatch && formatMatch;
-			});
-
-			if (order === 'recentes') {
-				filteredCards.sort(function(a, b) {
-					return new Date($(b).data('date')) - new Date($(a).data('date'));
-				});
-			} else if (order === 'anciennes') {
-				filteredCards.sort(function(a, b) {
-					return new Date($(a).data('date')) - new Date($(b).data('date'));
-				});
-			}
-
-			filteredCards.slice(0, offset).show(); // Afficher uniquement le nombre de cartes spécifié par offset
-
-			if (filteredCards.length > offset) {
-				$('#load-more').show();
-			} else {
-				$('#load-more').hide();
-			}
-		}
-
-		$('.dropdown-item').click(function() {
-			var dropdown = $(this).closest('.dropdown');
-			var value = $(this).data('value');
-			dropdown.find('.dropdown-selected').text($(this).text());
-
-			if (dropdown.attr('id') === 'categories-dropdown') {
-				category = value;
-			} else if (dropdown.attr('id') === 'formats-dropdown') {
-				format = value;
-			} else if (dropdown.attr('id') === 'order-by-dropdown') {
-				order = value;
-			}
-
-			offset = 8; // Réinitialiser l'offset lors du tri
-			filterPhotos();
-		});
-
-		$('#load-more').click(function() {
-			offset += 8; // Augmenter l'offset pour afficher plus de cartes
-			filterPhotos();
-		});
-
-		// Filtrer les photos au chargement initial
-		filterPhotos();
-	});
+	// Initialisation des photos
+	const allPhotos = <?php echo json_encode($all_photos); ?>;
 </script>
-
-</div> <!-- Ferme la div main-container -->
 
 </div> <!-- Ferme la div main-container -->

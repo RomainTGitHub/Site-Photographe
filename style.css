@@ -771,8 +771,7 @@ body.no-scroll {
 
 /* Bouton d'appel à l'action */
 .cta-button {
-    background-color: #008CBA;
-    color: white;
+    background-color: #D8D8D8;
     padding: 15px 20px;
     text-align: center;
     text-decoration: none;
@@ -782,6 +781,20 @@ body.no-scroll {
     cursor: pointer;
     border: none;
     border-radius: 4px;
+    width: 272px;
+    height: 50px;
+    color: #000;
+    font-family: "Space Mono";
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.cta-button:hover {
+    background: #000;
+    color: #FFF;
+    font-weight: 700;
 }
 
 /* Navigation des photos */
@@ -896,6 +909,137 @@ body.no-scroll {
     padding: 10px;
     width: 50%;
     /* S'assure que chaque élément prend 50% de la largeur disponible */
+}
+
+/* Style page infophoto.php */
+
+.container {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.cta-container {
+    display: flex;
+    align-items: center;
+}
+
+.related-photos-container {
+    max-width: 1440px;
+    margin: 0 auto;
+    margin-bottom: 110px;
+}
+
+.photo-container {
+    display: flex;
+    justify-content: space-between;
+    flex-grow: 1;
+    /* Allow this section to grow and take up available space */
+    align-items: stretch;
+    /* Ensure children stretch to the container height */
+}
+
+.photo-info {
+    width: 50%;
+    padding-right: 10px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    /* Align content to the bottom */
+    align-items: flex-start;
+    /* Align content to the left */
+    gap: 10px;
+}
+
+.interesse-infophoto {
+    color: #000;
+    font-family: Poppins;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: normal;
+}
+
+.titre-part2infophoto {
+    color: #000;
+    font-family: 'Space Mono';
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    margin-left: 60px;
+    margin-top: 40px;
+    margin-bottom: 20px;
+}
+
+.photo-image {
+    width: 50%;
+    padding-left: 10px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    /* Center the image vertically */
+}
+
+.photo-image img {
+    width: 100%;
+    object-fit: cover;
+}
+
+.interaction-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 118px;
+}
+
+.titre-infophoto {
+    color: #000;
+    font-family: "Space Mono";
+    font-size: 66px;
+    font-style: italic;
+    font-weight: 400;
+    line-height: 58px;
+    /* 87.879% */
+    text-transform: uppercase;
+    max-width: 420px;
+}
+
+.texte-infophoto {
+    color: #000;
+    font-family: 'Space Mono';
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+}
+
+#nav-preview-container {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    display: none;
+    z-index: 1000;
+}
+
+#nav-preview-container img {
+    width: 200px;
+    /* Adjust the size as needed */
+    height: auto;
+    transition: opacity 0.5s ease;
+    opacity: 0;
+}
+
+#nav-preview-container img.show {
+    opacity: 1;
 }
 
 

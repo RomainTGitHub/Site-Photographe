@@ -47,6 +47,8 @@ document.addEventListener('DOMContentLoaded', function () {
     setupDropdown('order-by-dropdown');
 });
 
+// Script pour le menu hamburger //
+
 document.addEventListener('DOMContentLoaded', function () {
     const hamburger = document.querySelector('.hamburger');
     const navMenu = document.querySelector('.nav-menu');
@@ -71,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-// Utilise jQuery pour gérer l'affichage du modal de contact et les événements de formulaire.
+// jQuery pour gérer l'affichage du modal de contact et les événements de formulaire.
 jQuery(document).ready(function ($) {
     var modal = $('#contactModal');
     var btn = $('#contactBtn'); // Bouton existant avec ID
@@ -120,23 +122,19 @@ jQuery(document).ready(function ($) {
 // Script pour la lightbox //
 
 let currentSlideIndex = 0;
-const slides = document.querySelectorAll('.related-photo-card');
 const lightbox = document.getElementById('lightbox');
 const lightboxImg = document.getElementById('lightbox-img');
 const lightboxReference = document.getElementById('lightbox-reference');
 const lightboxCategory = document.getElementById('lightbox-category');
 
+let visiblePhotos = [];
+
 function openLightbox(index) {
     currentSlideIndex = index;
-    const slide = slides[currentSlideIndex];
-    const imgSrc = slide.querySelector('.related-photo-fullscreen a').getAttribute('data-full-url');
-    const reference = slide.querySelector('.related-photo-reference').textContent;
-    const category = slide.querySelector('.related-photo-category').textContent;
-
-    lightboxImg.src = imgSrc;
-    lightboxReference.textContent = reference;
-    lightboxCategory.textContent = category;
-
+    const photo = visiblePhotos[currentSlideIndex];
+    lightboxImg.src = photo.fullUrl;
+    lightboxReference.textContent = photo.reference;
+    lightboxCategory.textContent = photo.category;
     lightbox.style.display = 'flex';
 }
 
@@ -147,31 +145,30 @@ function closeLightbox() {
 function changeSlide(n) {
     currentSlideIndex += n;
     if (currentSlideIndex < 0) {
-        currentSlideIndex = slides.length - 1;
-    } else if (currentSlideIndex >= slides.length) {
+        currentSlideIndex = visiblePhotos.length - 1;
+    } else if (currentSlideIndex >= visiblePhotos.length) {
         currentSlideIndex = 0;
     }
     openLightbox(currentSlideIndex);
 }
 
-document.querySelectorAll('.related-photo-fullscreen a').forEach((button, index) => {
-    button.addEventListener('click', (e) => {
-        e.preventDefault();
-        openLightbox(index);
+function attachLightboxEvents() {
+    document.querySelectorAll('.open-lightbox').forEach((button, index) => {
+        button.addEventListener('click', (e) => {
+            e.preventDefault();
+            openLightbox(parseInt(button.dataset.index));
+        });
     });
-});
-
-//Script pour le tri des photos et le bouton charger plus //
+}
 
 
-
+// Script pour la navigation dans la lightbox //
 jQuery(document).ready(function ($) {
     var currentPhotoIndex = 0;
-    var photos = [];
 
     // Fonction pour ouvrir la lightbox
     function openLightbox(index) {
-        var photo = photos[index];
+        var photo = allPhotos[index];
         $('#lightbox-img').attr('src', photo.fullUrl);
         $('#lightbox-reference').text(photo.reference);
         $('#lightbox-category').text(photo.category);
@@ -188,8 +185,8 @@ jQuery(document).ready(function ($) {
     function changePhoto(direction) {
         currentPhotoIndex += direction;
         if (currentPhotoIndex < 0) {
-            currentPhotoIndex = photos.length - 1;
-        } else if (currentPhotoIndex >= photos.length) {
+            currentPhotoIndex = allPhotos.length - 1;
+        } else if (currentPhotoIndex >= allPhotos.length) {
             currentPhotoIndex = 0;
         }
         openLightbox(currentPhotoIndex);
@@ -216,16 +213,147 @@ jQuery(document).ready(function ($) {
         closeLightbox();
     });
 
-    // Initialise les photos (à faire après le chargement de vos photos dans le HTML)
-    $('.open-lightbox').each(function (index) {
-        var fullUrl = $(this).data('full-url');
-        var reference = $(this).data('reference');
-        var category = $(this).data('category');
-        photos.push({
-            fullUrl: fullUrl,
-            reference: reference,
-            category: category
+    // Initialise les photos
+    function initializePhotos() {
+        allPhotos.forEach(function (photo, index) {
+            $('.open-lightbox').eq(index).data('index', index); // Assigne l'index de chaque photo
         });
-        $(this).data('index', index); // Assigne l'index de chaque photo
-    });
+    }
+    initializePhotos(); // Appel initial pour les photos chargées au départ
+
+    // Script pour afficher les images en survolant les fléches de navigation
+    var navPreviewContainer = document.getElementById('nav-preview-container');
+    var nextArrow = document.querySelector('.nav-arrow.next');
+
+    // Function to show preview image
+    function showPreview(imageUrl) {
+        if (imageUrl) {
+            navPreviewContainer.innerHTML = '<img src="' + imageUrl + '" alt="Preview">';
+            navPreviewContainer.style.display = 'block';
+        }
+    }
+
+    // Initialize the nav-preview-container with the next image
+    if (nextArrow) {
+        var nextImageUrl = nextArrow.dataset.nextImage;
+        showPreview(nextImageUrl);
+    }
+
+    var prevArrow = document.querySelector('.nav-arrow.prev');
+
+    if (prevArrow) {
+        prevArrow.addEventListener('mouseover', function () {
+            showPreview(this.dataset.prevImage);
+        });
+    }
+
+    if (nextArrow) {
+        nextArrow.addEventListener('mouseover', function () {
+            showPreview(this.dataset.nextImage);
+        });
+    }
+
+    // Script pour le bouton charger plus de la galerie photo
+    var loadMoreButton = document.getElementById('load-more');
+    var galleryGrid = document.getElementById('gallery-grid');
+    var page = 1;
+
+    if (loadMoreButton) {
+        loadMoreButton.addEventListener('click', function () {
+            page++;
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/wp-admin/admin-ajax.php', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+
+            xhr.onload = function () {
+                if (xhr.status >= 200 && xhr.status < 400) {
+                    var response = xhr.responseText;
+                    var tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = response;
+                    var newItems = tempDiv.querySelectorAll('.related-photo-card');
+                    newItems.forEach(function (item) {
+                        galleryGrid.appendChild(item);
+                    });
+                    if (newItems.length < 8) {
+                        loadMoreButton.style.display = 'none';
+                    }
+                    // Reattach lightbox events to new items
+                    initializePhotos(); // Réinitialise les photos pour inclure les nouveaux éléments
+                } else {
+                    console.error(xhr.statusText);
+                }
+            };
+
+            xhr.onerror = function () {
+                console.error(xhr.statusText);
+            };
+
+            xhr.send('action=load_more_photos&page=' + page);
+        });
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    // Autres scripts de configuration ici...
+
+    // Script pour le bouton charger plus de la galerie photo
+    var loadMoreButton = document.getElementById('load-more');
+    var galleryGrid = document.getElementById('gallery-grid');
+    var page = 1;
+
+    if (loadMoreButton) {
+        loadMoreButton.addEventListener('click', function () {
+            page++;
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/wp-admin/admin-ajax.php', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+
+            xhr.onload = function () {
+                if (xhr.status >= 200 && xhr.status < 400) {
+                    var response = xhr.responseText;
+                    var tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = response;
+                    var newItems = tempDiv.querySelectorAll('.related-photo-card');
+                    newItems.forEach(function (item) {
+                        galleryGrid.appendChild(item);
+                    });
+                    if (newItems.length < 8) {
+                        loadMoreButton.style.display = 'none';
+                    }
+                    // Reattach lightbox events to new items
+                    initializePhotos(); // Réinitialise les photos pour inclure les nouveaux éléments
+                } else {
+                    console.error(xhr.statusText);
+                }
+            };
+
+            xhr.onerror = function () {
+                console.error(xhr.statusText);
+            };
+
+            xhr.send('action=load_more_photos&page=' + page);
+        });
+    }
+
+    // Initialisation des photos et des événements de la lightbox
+    function initializePhotos() {
+        visiblePhotos = allPhotos;
+        document.querySelectorAll('.open-lightbox').forEach((button, index) => {
+            button.dataset.index = index;
+        });
+        attachLightboxEvents(); // Réattacher les événements de la lightbox aux nouvelles photos
+    }
+    initializePhotos(); // Initialiser les photos visibles
+
+    // Fonction pour attacher les événements de la lightbox
+    function attachLightboxEvents() {
+        document.querySelectorAll('.open-lightbox').forEach((button) => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                openLightbox(parseInt(button.getAttribute('data-index')));
+            });
+        });
+    }
+
+    attachLightboxEvents();
 });
