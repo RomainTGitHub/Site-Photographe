@@ -221,38 +221,6 @@ jQuery(document).ready(function ($) {
     }
     initializePhotos(); // Appel initial pour les photos chargées au départ
 
-    // Script pour afficher les images en survolant les fléches de navigation
-    var navPreviewContainer = document.getElementById('nav-preview-container');
-    var nextArrow = document.querySelector('.nav-arrow.next');
-
-    // Function to show preview image
-    function showPreview(imageUrl) {
-        if (imageUrl) {
-            navPreviewContainer.innerHTML = '<img src="' + imageUrl + '" alt="Preview">';
-            navPreviewContainer.style.display = 'block';
-        }
-    }
-
-    // Initialize the nav-preview-container with the next image
-    if (nextArrow) {
-        var nextImageUrl = nextArrow.dataset.nextImage;
-        showPreview(nextImageUrl);
-    }
-
-    var prevArrow = document.querySelector('.nav-arrow.prev');
-
-    if (prevArrow) {
-        prevArrow.addEventListener('mouseover', function () {
-            showPreview(this.dataset.prevImage);
-        });
-    }
-
-    if (nextArrow) {
-        nextArrow.addEventListener('mouseover', function () {
-            showPreview(this.dataset.nextImage);
-        });
-    }
-
     // Script pour le bouton charger plus de la galerie photo
     var loadMoreButton = document.getElementById('load-more');
     var galleryGrid = document.getElementById('gallery-grid');
@@ -293,67 +261,24 @@ jQuery(document).ready(function ($) {
     }
 });
 
-document.addEventListener('DOMContentLoaded', function () {
-    // Autres scripts de configuration ici...
+// Initialisation des photos et des événements de la lightbox
+function initializePhotos() {
+    visiblePhotos = allPhotos;
+    document.querySelectorAll('.open-lightbox').forEach((button, index) => {
+        button.dataset.index = index;
+    });
+    attachLightboxEvents(); // Réattacher les événements de la lightbox aux nouvelles photos
+}
+initializePhotos(); // Initialiser les photos visibles
 
-    // Script pour le bouton charger plus de la galerie photo
-    var loadMoreButton = document.getElementById('load-more');
-    var galleryGrid = document.getElementById('gallery-grid');
-    var page = 1;
-
-    if (loadMoreButton) {
-        loadMoreButton.addEventListener('click', function () {
-            page++;
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', '/wp-admin/admin-ajax.php', true);
-            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-
-            xhr.onload = function () {
-                if (xhr.status >= 200 && xhr.status < 400) {
-                    var response = xhr.responseText;
-                    var tempDiv = document.createElement('div');
-                    tempDiv.innerHTML = response;
-                    var newItems = tempDiv.querySelectorAll('.related-photo-card');
-                    newItems.forEach(function (item) {
-                        galleryGrid.appendChild(item);
-                    });
-                    if (newItems.length < 8) {
-                        loadMoreButton.style.display = 'none';
-                    }
-                    // Reattach lightbox events to new items
-                    initializePhotos(); // Réinitialise les photos pour inclure les nouveaux éléments
-                } else {
-                    console.error(xhr.statusText);
-                }
-            };
-
-            xhr.onerror = function () {
-                console.error(xhr.statusText);
-            };
-
-            xhr.send('action=load_more_photos&page=' + page);
+// Fonction pour attacher les événements de la lightbox
+function attachLightboxEvents() {
+    document.querySelectorAll('.open-lightbox').forEach((button) => {
+        button.addEventListener('click', (e) => {
+            e.preventDefault();
+            openLightbox(parseInt(button.getAttribute('data-index')));
         });
-    }
+    });
+}
 
-    // Initialisation des photos et des événements de la lightbox
-    function initializePhotos() {
-        visiblePhotos = allPhotos;
-        document.querySelectorAll('.open-lightbox').forEach((button, index) => {
-            button.dataset.index = index;
-        });
-        attachLightboxEvents(); // Réattacher les événements de la lightbox aux nouvelles photos
-    }
-    initializePhotos(); // Initialiser les photos visibles
-
-    // Fonction pour attacher les événements de la lightbox
-    function attachLightboxEvents() {
-        document.querySelectorAll('.open-lightbox').forEach((button) => {
-            button.addEventListener('click', (e) => {
-                e.preventDefault();
-                openLightbox(parseInt(button.getAttribute('data-index')));
-            });
-        });
-    }
-
-    attachLightboxEvents();
-});
+attachLightboxEvents();
