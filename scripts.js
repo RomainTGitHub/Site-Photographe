@@ -260,25 +260,3 @@ jQuery(document).ready(function ($) {
         });
     }
 });
-
-// Initialisation des photos et des événements de la lightbox
-function initializePhotos() {
-    visiblePhotos = allPhotos;
-    document.querySelectorAll('.open-lightbox').forEach((button, index) => {
-        button.dataset.index = index;
-    });
-    attachLightboxEvents(); // Réattacher les événements de la lightbox aux nouvelles photos
-}
-initializePhotos(); // Initialiser les photos visibles
-
-// Fonction pour attacher les événements de la lightbox
-function attachLightboxEvents() {
-    document.querySelectorAll('.open-lightbox').forEach((button) => {
-        button.addEventListener('click', (e) => {
-            e.preventDefault();
-            openLightbox(parseInt(button.getAttribute('data-index')));
-        });
-    });
-}
-
-attachLightboxEvents();
