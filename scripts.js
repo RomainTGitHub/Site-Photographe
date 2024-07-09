@@ -126,21 +126,23 @@ jQuery(document).ready(function ($) {
 
     // Fonction pour ouvrir la lightbox
     function openLightbox(index) {
-        var photo = allPhotos[index];
-        $('#lightbox-img').attr('src', photo.fullUrl);
-        $('#lightbox-reference').text(photo.reference);
-        $('#lightbox-category').text(photo.category);
-        $('#lightbox').fadeIn();
-        currentPhotoIndex = index;
+        if (index >= 0 && index < allPhotos.length) {
+            var photo = allPhotos[index];
+            $('#lightbox-img').attr('src', photo.fullUrl);
+            $('#lightbox-reference').text(photo.reference);
+            $('#lightbox-category').text(photo.category);
+            $('#lightbox').fadeIn();
+            currentPhotoIndex = index;
+        }
     }
 
     // Fonction pour fermer la lightbox
-    function closeLightbox() {
+    window.closeLightbox = function () {
         $('#lightbox').fadeOut();
     }
 
     // Fonction pour changer la photo dans la lightbox
-    function changePhoto(direction) {
+    window.changeSlide = function (direction) {
         currentPhotoIndex += direction;
         if (currentPhotoIndex < 0) {
             currentPhotoIndex = allPhotos.length - 1;
@@ -155,20 +157,6 @@ jQuery(document).ready(function ($) {
         e.preventDefault();
         var index = $(this).data('index');
         openLightbox(index);
-    });
-
-    // Attache des événements de clic aux boutons de navigation de la lightbox
-    $(document).on('click', '.lightbox-prev', function () {
-        changePhoto(-1);
-    });
-
-    $(document).on('click', '.lightbox-next', function () {
-        changePhoto(1);
-    });
-
-    // Attache un événement de clic au bouton de fermeture de la lightbox
-    $('.lightbox-close').on('click', function () {
-        closeLightbox();
     });
 
     // Fonction pour mettre à jour les photos visibles et attacher les événements de la lightbox

@@ -880,6 +880,7 @@ body.no-scroll {
     font-size: 30px;
     transition: 0.3s;
     user-select: none;
+    z-index: 1000;
 }
 
 .lightbox-prev {
