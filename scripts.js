@@ -150,6 +150,13 @@ jQuery(document).ready(function ($) {
         openLightbox(currentPhotoIndex);
     }
 
+    // Attache un événement de clic aux boutons d'ouverture de la lightbox
+    $(document).on('click', '.open-lightbox', function (e) {
+        e.preventDefault();
+        var index = $(this).data('index');
+        openLightbox(index);
+    });
+
     // Attache des événements de clic aux boutons de navigation de la lightbox
     $('.lightbox-prev').on('click', function () {
         changePhoto(-1);
@@ -164,10 +171,10 @@ jQuery(document).ready(function ($) {
         closeLightbox();
     });
 
-    // Initialise les photos
-    function initializePhotos() {
+    // Fonction pour mettre à jour les photos visibles et attacher les événements de la lightbox
+    function updateVisiblePhotos() {
         allPhotos = [];
-        $('.related-photo-card').each(function (index) {
+        $('.related-photo-card, .infophoto-card').each(function (index) {
             var photo = {
                 fullUrl: $(this).find('.open-lightbox').data('full-url'),
                 reference: $(this).find('.related-photo-reference').text(),
@@ -185,7 +192,7 @@ jQuery(document).ready(function ($) {
         });
     }
 
-    initializePhotos(); // Appel initial pour les photos chargées au départ
+    updateVisiblePhotos(); // Initialiser les photos visibles
 
     // Script pour le bouton charger plus de la galerie photo
     var loadMoreButton = document.getElementById('load-more');
@@ -212,7 +219,7 @@ jQuery(document).ready(function ($) {
                         loadMoreButton.style.display = 'none';
                     }
                     // Réinitialiser les photos pour inclure les nouveaux éléments
-                    initializePhotos();
+                    updateVisiblePhotos();
                 } else {
                     console.error(xhr.statusText);
                 }
@@ -226,3 +233,4 @@ jQuery(document).ready(function ($) {
         });
     }
 });
+

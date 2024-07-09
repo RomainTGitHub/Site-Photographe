@@ -167,7 +167,7 @@ if (isset($_GET['id'])) {
                             <div class="related-photo-card infophoto-card">
                                 <div class="related-photo-overlay infophoto-overlay">
                                     <div class="related-photo-fullscreen infophoto-fullscreen">
-                                        <a href="#" data-full-url="<?php echo esc_url(get_the_post_thumbnail_url(get_the_ID(), 'full')); ?>" onclick="openLightbox(<?php echo $index; ?>)"><i class="fas fa-expand"></i></a>
+                                        <a href="#" class="open-lightbox" data-full-url="<?php echo esc_url(get_the_post_thumbnail_url(get_the_ID(), 'full')); ?>" data-reference="<?php echo esc_html($related_reference); ?>" data-category="<?php echo esc_html(implode(', ', $related_categories)); ?>"><i class="fas fa-expand"></i></a>
                                     </div>
                                     <div class="related-photo-view infophoto-view">
                                         <a href="?id=<?php echo get_the_ID(); ?>"><i class="fas fa-eye"></i></a>
