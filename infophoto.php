@@ -121,11 +121,12 @@ if (isset($_GET['id'])) {
                         <button id="contactBtn" class="cta-button" data-reference="<?php echo esc_attr($reference); ?>">Contact</button>
                     </div>
                     <div class="navigation">
-                        <div id="nav-preview-container"></div> <!-- Ajout de la div pour les aperçus d'images -->
-                        <div class="navigation-buttons">
-
-                            <a href="?id=<?php echo $prev_id; ?>" class="nav-arrow prev" data-prev-image="<?php echo esc_url($prev_image_url); ?>"><i class="fas fa-arrow-left"></i></a>
-                            <a href="?id=<?php echo $next_id; ?>" class="nav-arrow next" data-next-image="<?php echo esc_url($next_image_url); ?>"><i class="fas fa-arrow-right"></i></a>
+                        <div class="navigation">
+                            <div id="nav-preview-container"></div>
+                            <div class="navigation-buttons">
+                                <a href="?id=<?php echo $prev_id; ?>" class="nav-arrow prev" data-prev-image="<?php echo esc_url($prev_image_url); ?>"><i class="fas fa-arrow-left"></i></a>
+                                <a href="?id=<?php echo $next_id; ?>" class="nav-arrow next" data-next-image="<?php echo esc_url($next_image_url); ?>"><i class="fas fa-arrow-right"></i></a>
+                            </div>
                         </div>
                     </div>
                 </div>

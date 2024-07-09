@@ -234,3 +234,40 @@ jQuery(document).ready(function ($) {
     }
 });
 
+// Script pour l'apercu des images au survol des fléches dans la page infophoto.php //
+
+document.addEventListener("DOMContentLoaded", function () {
+    var navPreviewContainer = document.getElementById('nav-preview-container');
+
+    function showPreview(imageUrl) {
+        if (imageUrl) {
+            navPreviewContainer.innerHTML = '<img src="' + imageUrl + '" alt="Preview" style="max-width: 100%; max-height: 100%;">';
+            navPreviewContainer.style.display = 'block';
+        }
+    }
+
+    function hidePreview() {
+        navPreviewContainer.style.display = 'none';
+    }
+
+    var prevArrow = document.querySelector('.nav-arrow.prev');
+    var nextArrow = document.querySelector('.nav-arrow.next');
+
+    if (prevArrow) {
+        prevArrow.addEventListener('mouseover', function () {
+            showPreview(this.getAttribute('data-prev-image'));
+        });
+    }
+
+    if (nextArrow) {
+        nextArrow.addEventListener('mouseover', function () {
+            showPreview(this.getAttribute('data-next-image'));
+        });
+    }
+
+    // Par défaut, afficher l'image suivante
+    if (nextArrow) {
+        var nextImageUrl = nextArrow.getAttribute('data-next-image');
+        showPreview(nextImageUrl);
+    }
+});
