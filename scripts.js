@@ -158,11 +158,11 @@ jQuery(document).ready(function ($) {
     });
 
     // Attache des événements de clic aux boutons de navigation de la lightbox
-    $('.lightbox-prev').on('click', function () {
+    $(document).on('click', '.lightbox-prev', function () {
         changePhoto(-1);
     });
 
-    $('.lightbox-next').on('click', function () {
+    $(document).on('click', '.lightbox-next', function () {
         changePhoto(1);
     });
 
@@ -195,6 +195,7 @@ jQuery(document).ready(function ($) {
     updateVisiblePhotos(); // Initialiser les photos visibles
 
     // Script pour le bouton charger plus de la galerie photo
+
     var loadMoreButton = document.getElementById('load-more');
     var galleryGrid = document.getElementById('gallery-grid');
     var page = 1;
