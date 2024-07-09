@@ -120,51 +120,9 @@ jQuery(document).ready(function ($) {
 });
 
 // Script pour la lightbox //
-
-let currentSlideIndex = 0;
-const lightbox = document.getElementById('lightbox');
-const lightboxImg = document.getElementById('lightbox-img');
-const lightboxReference = document.getElementById('lightbox-reference');
-const lightboxCategory = document.getElementById('lightbox-category');
-
-let visiblePhotos = [];
-
-function openLightbox(index) {
-    currentSlideIndex = index;
-    const photo = visiblePhotos[currentSlideIndex];
-    lightboxImg.src = photo.fullUrl;
-    lightboxReference.textContent = photo.reference;
-    lightboxCategory.textContent = photo.category;
-    lightbox.style.display = 'flex';
-}
-
-function closeLightbox() {
-    lightbox.style.display = 'none';
-}
-
-function changeSlide(n) {
-    currentSlideIndex += n;
-    if (currentSlideIndex < 0) {
-        currentSlideIndex = visiblePhotos.length - 1;
-    } else if (currentSlideIndex >= visiblePhotos.length) {
-        currentSlideIndex = 0;
-    }
-    openLightbox(currentSlideIndex);
-}
-
-function attachLightboxEvents() {
-    document.querySelectorAll('.open-lightbox').forEach((button, index) => {
-        button.addEventListener('click', (e) => {
-            e.preventDefault();
-            openLightbox(parseInt(button.dataset.index));
-        });
-    });
-}
-
-
-// Script pour la navigation dans la lightbox //
 jQuery(document).ready(function ($) {
     var currentPhotoIndex = 0;
+    var allPhotos = [];
 
     // Fonction pour ouvrir la lightbox
     function openLightbox(index) {
@@ -192,13 +150,6 @@ jQuery(document).ready(function ($) {
         openLightbox(currentPhotoIndex);
     }
 
-    // Attache un événement de clic aux boutons d'ouverture de la lightbox
-    $(document).on('click', '.open-lightbox', function (e) {
-        e.preventDefault();
-        var index = $(this).data('index');
-        openLightbox(index);
-    });
-
     // Attache des événements de clic aux boutons de navigation de la lightbox
     $('.lightbox-prev').on('click', function () {
         changePhoto(-1);
@@ -215,10 +166,25 @@ jQuery(document).ready(function ($) {
 
     // Initialise les photos
     function initializePhotos() {
-        allPhotos.forEach(function (photo, index) {
-            $('.open-lightbox').eq(index).data('index', index); // Assigne l'index de chaque photo
+        allPhotos = [];
+        $('.related-photo-card').each(function (index) {
+            var photo = {
+                fullUrl: $(this).find('.open-lightbox').data('full-url'),
+                reference: $(this).find('.related-photo-reference').text(),
+                category: $(this).find('.related-photo-category').text()
+            };
+            allPhotos.push(photo);
+            $(this).find('.open-lightbox').data('index', index); // Assigne l'index de chaque photo
+        });
+
+        // Réattacher les événements de clic aux nouveaux éléments
+        $('.open-lightbox').off('click').on('click', function (e) {
+            e.preventDefault();
+            var index = $(this).data('index');
+            openLightbox(index);
         });
     }
+
     initializePhotos(); // Appel initial pour les photos chargées au départ
 
     // Script pour le bouton charger plus de la galerie photo
@@ -245,8 +211,8 @@ jQuery(document).ready(function ($) {
                     if (newItems.length < 8) {
                         loadMoreButton.style.display = 'none';
                     }
-                    // Reattach lightbox events to new items
-                    initializePhotos(); // Réinitialise les photos pour inclure les nouveaux éléments
+                    // Réinitialiser les photos pour inclure les nouveaux éléments
+                    initializePhotos();
                 } else {
                     console.error(xhr.statusText);
                 }
