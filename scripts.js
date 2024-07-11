@@ -47,6 +47,11 @@ document.addEventListener('DOMContentLoaded', function () {
     setupDropdown('formats-dropdown');
     setupDropdown('order-by-dropdown');
 
+    // Fonction pour déterminer le nombre de cartes visibles en fonction de la taille de l'écran
+    function getMaxVisibleCards() {
+        return window.innerWidth <= 800 ? 4 : 8;
+    }
+
     // Script pour le tri et filtrage des photos de la galerie
     function filterPhotos() {
         const selectedCategory = document.querySelector('#categories-dropdown .dropdown-selected').getAttribute('data-value');
@@ -84,7 +89,7 @@ document.addEventListener('DOMContentLoaded', function () {
         visibleCards.forEach(card => container.appendChild(card));
 
         // Gérer l'affichage des cartes (max 8 visibles) et du bouton "Charger plus"
-        const maxVisible = 8;
+        const maxVisible = getMaxVisibleCards();
         if (visibleCards.length > maxVisible) {
             for (let i = maxVisible; i < visibleCards.length; i++) {
                 visibleCards[i].classList.add('hidden');
@@ -102,6 +107,9 @@ document.addEventListener('DOMContentLoaded', function () {
         });
         this.style.display = 'none'; // Cacher le bouton après avoir affiché toutes les cartes
     });
+
+    // Refiltrer les photos lorsque la taille de l'écran change
+    window.addEventListener('resize', filterPhotos);
 
     // Appel initial pour afficher toutes les cartes au chargement de la page
     document.querySelector('#categories-dropdown .dropdown-selected').setAttribute('data-value', 'all');
