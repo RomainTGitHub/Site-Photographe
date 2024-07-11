@@ -15,3 +15,5 @@
         </div>
     </div>
 </div>
+
+<div id="overlay"></div> <!-- Overlay ajouté ici -->

@@ -624,8 +624,13 @@ body.no-scroll {
     height: 100%;
     background: rgba(0, 0, 0, 0.5);
     /* Couleur de fond noire avec transparence */
-    z-index: 900;
+    z-index: 1000;
     /* En dessous de la modale mais au-dessus du reste */
+}
+
+.modal.show+#overlay {
+    display: block;
+    /* Affiche l'overlay lorsque la modale est visible */
 }
 
 /* Styles pour la modal */
