@@ -47,6 +47,33 @@ document.addEventListener('DOMContentLoaded', function () {
     setupDropdown('order-by-dropdown');
 });
 
+// Script pour le tri des photos de la galerie //
+
+document.addEventListener('DOMContentLoaded', function () {
+    const categoryDropdownItems = document.querySelectorAll('#categories-dropdown .dropdown-item');
+    const photoCards = document.querySelectorAll('.related-photo-card');
+
+    categoryDropdownItems.forEach(item => {
+        item.addEventListener('click', function () {
+            const selectedCategory = this.getAttribute('data-value');
+
+            // Mettre à jour l'affichage du dropdown
+            document.querySelector('#categories-dropdown .dropdown-selected').innerText = this.innerText;
+
+            // Filtrer les cartes de photo
+            photoCards.forEach(card => {
+                const cardCategories = card.getAttribute('data-category').split(' ');
+
+                if (selectedCategory === 'all' || cardCategories.includes(selectedCategory)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    });
+});
+
 // Script pour le menu hamburger //
 
 document.addEventListener('DOMContentLoaded', function () {

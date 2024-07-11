@@ -18,6 +18,7 @@ $formats = get_terms(array(
 		<div id="categories-dropdown" class="dropdown">
 			<div class="dropdown-selected">Catégories</div>
 			<ul class="dropdown-menu">
+				<li class="dropdown-item" data-value="all"></li> <!-- Option pour afficher toutes les catégories -->
 				<?php foreach ($categories as $category) : ?>
 					<li class="dropdown-item" data-value="<?php echo esc_attr($category->slug); ?>">
 						<?php echo esc_html($category->name); ?>
@@ -29,6 +30,7 @@ $formats = get_terms(array(
 		<div id="formats-dropdown" class="dropdown">
 			<div class="dropdown-selected">Formats</div>
 			<ul class="dropdown-menu">
+				<li class="dropdown-item" data-value="all"></li>
 				<?php foreach ($formats as $format) : ?>
 					<li class="dropdown-item" data-value="<?php echo esc_attr($format->slug); ?>">
 						<?php echo esc_html($format->name); ?>
@@ -60,7 +62,6 @@ $formats = get_terms(array(
 
 	$all_photos = array();
 
-
 	if ($query->have_posts()) :
 		$count = 0;
 		while ($query->have_posts()) : $query->the_post();
@@ -72,6 +73,7 @@ $formats = get_terms(array(
 			$title = get_the_title($post_id);
 			$reference = get_post_meta($post_id, 'reference', true);
 			$categories = wp_get_post_terms($post_id, 'categorie', array("fields" => "names"));
+			$categories_slugs = wp_get_post_terms($post_id, 'categorie', array("fields" => "slugs"));
 			$all_photos[] = array(
 				'id' => $post_id,
 				'fullUrl' => $image_url,
@@ -82,7 +84,7 @@ $formats = get_terms(array(
 			$formats = wp_get_post_terms($post_id, 'format', array("fields" => "names"));
 			$date = get_the_date('Y', $post_id);
 	?>
-			<div class="related-photo-card" data-date="<?php echo esc_attr($date); ?>">
+			<div class="related-photo-card" data-date="<?php echo esc_attr($date); ?>" data-category="<?php echo esc_attr(implode(' ', $categories_slugs)); ?>">
 				<div class="related-photo-overlay">
 					<div class="related-photo-fullscreen">
 						<a href="#" class="open-lightbox" data-full-url="<?php echo esc_url($image_full_url); ?>" data-reference="<?php echo esc_html($reference); ?>" data-category="<?php echo esc_html(implode(', ', $categories)); ?>"><i class="fas fa-expand"></i></a>
@@ -117,5 +119,3 @@ $formats = get_terms(array(
 	// Initialisation des photos
 	const allPhotos = <?php echo json_encode($all_photos); ?>;
 </script>
-
-</div> <!-- Ferme la div main-container -->
