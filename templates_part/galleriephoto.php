@@ -67,7 +67,7 @@ $formats = get_terms(array(
 			if ($count >= 8) break; // Afficher seulement les 8 premières images
 			$count++;
 			$post_id = get_the_ID();
-			$image_url = get_the_post_thumbnail_url($post_id, 'full');
+			$image_url = get_the_post_thumbnail_url($post_id, 'medium_large');
 			$image_full_url = get_the_post_thumbnail_url($post_id, 'full');
 			$title = get_the_title($post_id);
 			$reference = get_post_meta($post_id, 'reference', true);
