@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // Fonction pour configurer un menu déroulant spécifique identifié par dropdownId.
     function setupDropdown(dropdownId) {
         const dropdown = document.getElementById(dropdownId);
         if (!dropdown) return; // Vérifie si l'élément existe
@@ -66,14 +65,14 @@ document.addEventListener('DOMContentLoaded', function () {
             const formatMatch = (selectedFormat === 'all' || cardFormats.includes(selectedFormat));
 
             if (categoryMatch && formatMatch) {
-                card.style.display = 'block';
+                card.classList.remove('hidden');
             } else {
-                card.style.display = 'none';
+                card.classList.add('hidden');
             }
         });
 
         // Trier les photos par date
-        const visibleCards = photoCards.filter(card => card.style.display === 'block');
+        const visibleCards = photoCards.filter(card => !card.classList.contains('hidden'));
         visibleCards.sort((a, b) => {
             const dateA = new Date(a.getAttribute('data-date'));
             const dateB = new Date(b.getAttribute('data-date'));
@@ -83,7 +82,26 @@ document.addEventListener('DOMContentLoaded', function () {
         // Réordonner les éléments du DOM en fonction de l'ordre trié
         const container = document.getElementById('gallery-grid');
         visibleCards.forEach(card => container.appendChild(card));
+
+        // Gérer l'affichage des cartes (max 8 visibles) et du bouton "Charger plus"
+        const maxVisible = 8;
+        if (visibleCards.length > maxVisible) {
+            for (let i = maxVisible; i < visibleCards.length; i++) {
+                visibleCards[i].classList.add('hidden');
+            }
+            document.querySelector('.load-more-container').style.display = 'block';
+        } else {
+            document.querySelector('.load-more-container').style.display = 'none';
+        }
     }
+
+    // Gestion du bouton "Charger plus"
+    document.getElementById('load-more').addEventListener('click', function () {
+        document.querySelectorAll('.related-photo-card.hidden').forEach(card => {
+            card.classList.remove('hidden');
+        });
+        this.style.display = 'none'; // Cacher le bouton après avoir affiché toutes les cartes
+    });
 
     // Appel initial pour afficher toutes les cartes au chargement de la page
     document.querySelector('#categories-dropdown .dropdown-selected').setAttribute('data-value', 'all');

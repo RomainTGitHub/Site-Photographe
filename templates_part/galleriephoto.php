@@ -105,23 +105,15 @@ $date = get_terms(array(
 				</div>
 				<img src="<?php echo esc_url($image_url); ?>" alt="<?php echo esc_attr($title); ?>">
 			</div>
-		<?php endwhile; ?>
-</div>
-
-<?php if ($query->post_count > 8) : ?>
-	<div class="load-more-container">
-		<button id="load-more" class="load-more-button">Charger plus</button>
-	</div>
-<?php endif; ?>
-
-<?php
+	<?php endwhile;
 	else :
 		echo '<p>Aucune photo trouvée.</p>';
 	endif;
 	wp_reset_postdata();
-?>
+	?>
+</div>
 
-<script>
-	// Initialisation des photos
-	const allPhotos = <?php echo json_encode($all_photos); ?>;
-</script>
+
+<div class="load-more-container">
+	<button id="load-more" class="load-more-button">Charger plus</button>
+</div>
