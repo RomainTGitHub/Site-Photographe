@@ -1,4 +1,3 @@
-// Écoute l'événement DOMContentLoaded pour exécuter la fonction une fois que le DOM est complètement chargé.
 document.addEventListener('DOMContentLoaded', function () {
     // Fonction pour configurer un menu déroulant spécifique identifié par dropdownId.
     function setupDropdown(dropdownId) {
@@ -32,6 +31,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     dropdownItem.classList.remove('selected');
                 });
                 this.classList.add('selected');
+
+                // Appliquer le filtrage et tri des photos après chaque sélection
+                filterPhotos();
             });
         });
 
@@ -45,46 +47,59 @@ document.addEventListener('DOMContentLoaded', function () {
     setupDropdown('categories-dropdown');
     setupDropdown('formats-dropdown');
     setupDropdown('order-by-dropdown');
-});
 
-// Script pour le tri des photos de la galerie //
+    // Script pour le tri et filtrage des photos de la galerie
+    function filterPhotos() {
+        const selectedCategory = document.querySelector('#categories-dropdown .dropdown-selected').getAttribute('data-value');
+        const selectedFormat = document.querySelector('#formats-dropdown .dropdown-selected').getAttribute('data-value');
+        const orderBy = document.querySelector('#order-by-dropdown .dropdown-selected').getAttribute('data-value');
+        console.log('Filtering photos by category:', selectedCategory, 'format:', selectedFormat, 'and order by:', orderBy);
 
-document.addEventListener('DOMContentLoaded', function () {
-    const categoryDropdownItems = document.querySelectorAll('#categories-dropdown .dropdown-item');
-    const photoCards = document.querySelectorAll('.related-photo-card');
+        const photoCards = Array.from(document.querySelectorAll('.related-photo-card'));
 
-    categoryDropdownItems.forEach(item => {
-        item.addEventListener('click', function () {
-            const selectedCategory = this.getAttribute('data-value');
+        // Filtrer les photos par catégorie et format
+        photoCards.forEach(card => {
+            const cardCategories = card.getAttribute('data-category').split(' ');
+            const cardFormats = card.getAttribute('data-format').split(' ');
 
-            // Mettre à jour l'affichage du dropdown
-            document.querySelector('#categories-dropdown .dropdown-selected').innerText = this.innerText;
+            const categoryMatch = (selectedCategory === 'all' || cardCategories.includes(selectedCategory));
+            const formatMatch = (selectedFormat === 'all' || cardFormats.includes(selectedFormat));
 
-            // Filtrer les cartes de photo
-            photoCards.forEach(card => {
-                const cardCategories = card.getAttribute('data-category').split(' ');
-
-                if (selectedCategory === 'all' || cardCategories.includes(selectedCategory)) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
+            if (categoryMatch && formatMatch) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
         });
-    });
+
+        // Trier les photos par date
+        const visibleCards = photoCards.filter(card => card.style.display === 'block');
+        visibleCards.sort((a, b) => {
+            const dateA = new Date(a.getAttribute('data-date'));
+            const dateB = new Date(b.getAttribute('data-date'));
+            return orderBy === 'recentes' ? dateB - dateA : dateA - dateB;
+        });
+
+        // Réordonner les éléments du DOM en fonction de l'ordre trié
+        const container = document.getElementById('gallery-grid');
+        visibleCards.forEach(card => container.appendChild(card));
+    }
+
+    // Appel initial pour afficher toutes les cartes au chargement de la page
+    document.querySelector('#categories-dropdown .dropdown-selected').setAttribute('data-value', 'all');
+    document.querySelector('#formats-dropdown .dropdown-selected').setAttribute('data-value', 'all');
+    document.querySelector('#order-by-dropdown .dropdown-selected').setAttribute('data-value', 'recentes');
+    filterPhotos();
 });
 
-// Script pour le menu hamburger //
+// Script pour le menu hamburger
+const hamburger = document.querySelector('.hamburger');
+const navMenu = document.querySelector('.nav-menu');
+const hamburgerIcon = document.querySelector('.hamburger-icon');
+const closeIcon = document.querySelector('.close-icon');
+const body = document.body;
 
-document.addEventListener('DOMContentLoaded', function () {
-    const hamburger = document.querySelector('.hamburger');
-    const navMenu = document.querySelector('.nav-menu');
-    const hamburgerIcon = document.querySelector('.hamburger-icon');
-    const closeIcon = document.querySelector('.close-icon');
-    const body = document.body;
-
-    if (!hamburger || !navMenu || !hamburgerIcon || !closeIcon) return;
-
+if (hamburger && navMenu && hamburgerIcon && closeIcon) {
     hamburger.addEventListener('click', function () {
         navMenu.classList.toggle('active');
         hamburger.classList.toggle('open');
@@ -98,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function () {
             closeIcon.style.display = 'none';
         }
     });
-});
+}
 
 // jQuery pour gérer l'affichage du modal de contact et les événements de formulaire.
 jQuery(document).ready(function ($) {
@@ -146,7 +161,7 @@ jQuery(document).ready(function ($) {
     });
 });
 
-// Script pour la lightbox //
+// Script pour la lightbox
 jQuery(document).ready(function ($) {
     var currentPhotoIndex = 0;
     var allPhotos = [];
@@ -209,50 +224,7 @@ jQuery(document).ready(function ($) {
 
     updateVisiblePhotos(); // Initialiser les photos visibles
 
-    // Script pour le bouton charger plus de la galerie photo
-
-    var loadMoreButton = document.getElementById('load-more');
-    var galleryGrid = document.getElementById('gallery-grid');
-    var page = 1;
-
-    if (loadMoreButton) {
-        loadMoreButton.addEventListener('click', function () {
-            page++;
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', '/wp-admin/admin-ajax.php', true);
-            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-
-            xhr.onload = function () {
-                if (xhr.status >= 200 && xhr.status < 400) {
-                    var response = xhr.responseText;
-                    var tempDiv = document.createElement('div');
-                    tempDiv.innerHTML = response;
-                    var newItems = tempDiv.querySelectorAll('.related-photo-card');
-                    newItems.forEach(function (item) {
-                        galleryGrid.appendChild(item);
-                    });
-                    if (newItems.length < 8) {
-                        loadMoreButton.style.display = 'none';
-                    }
-                    // Réinitialiser les photos pour inclure les nouveaux éléments
-                    updateVisiblePhotos();
-                } else {
-                    console.error(xhr.statusText);
-                }
-            };
-
-            xhr.onerror = function () {
-                console.error(xhr.statusText);
-            };
-
-            xhr.send('action=load_more_photos&page=' + page);
-        });
-    }
-});
-
-// Script pour l'apercu des images au survol des fléches dans la page infophoto.php //
-
-document.addEventListener("DOMContentLoaded", function () {
+    // Script pour l'apercu des images au survol des fléches dans la page infophoto.php
     var navPreviewContainer = document.getElementById('nav-preview-container');
 
     function showPreview(imageUrl) {

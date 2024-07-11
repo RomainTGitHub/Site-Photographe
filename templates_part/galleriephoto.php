@@ -10,9 +10,14 @@ $formats = get_terms(array(
 	'taxonomy' => 'format',
 	'hide_empty' => false,
 ));
+
+$date = get_terms(array(
+	'taxonomy' => 'format',
+	'hide_empty' => false,
+));
 ?>
 
-<div class="dropdowns-container">
+<section class="dropdowns-container">
 	<div class="left-dropdowns">
 		<!-- Menu déroulant des catégories -->
 		<div id="categories-dropdown" class="dropdown">
@@ -49,7 +54,7 @@ $formats = get_terms(array(
 			</ul>
 		</div>
 	</div>
-</div>
+</section>
 
 <div id="gallery-grid" class="gallery-grid">
 	<?php
@@ -65,7 +70,6 @@ $formats = get_terms(array(
 	if ($query->have_posts()) :
 		$count = 0;
 		while ($query->have_posts()) : $query->the_post();
-			if ($count >= 8) break; // Afficher seulement les 8 premières images
 			$count++;
 			$post_id = get_the_ID();
 			$image_url = get_the_post_thumbnail_url($post_id, 'medium_large');
@@ -74,6 +78,8 @@ $formats = get_terms(array(
 			$reference = get_post_meta($post_id, 'reference', true);
 			$categories = wp_get_post_terms($post_id, 'categorie', array("fields" => "names"));
 			$categories_slugs = wp_get_post_terms($post_id, 'categorie', array("fields" => "slugs"));
+			$format_slugs = wp_get_post_terms($post_id, 'format', array("fields" => "slugs"));
+			$date = get_the_date('Y-m-d', $post_id);
 			$all_photos[] = array(
 				'id' => $post_id,
 				'fullUrl' => $image_url,
@@ -84,7 +90,7 @@ $formats = get_terms(array(
 			$formats = wp_get_post_terms($post_id, 'format', array("fields" => "names"));
 			$date = get_the_date('Y', $post_id);
 	?>
-			<div class="related-photo-card" data-date="<?php echo esc_attr($date); ?>" data-category="<?php echo esc_attr(implode(' ', $categories_slugs)); ?>">
+			<div class="related-photo-card" data-date="<?php echo esc_attr($date); ?>" data-category="<?php echo esc_attr(implode(' ', $categories_slugs)); ?>" data-format="<?php echo esc_attr(implode(' ', $format_slugs)); ?>">
 				<div class="related-photo-overlay">
 					<div class="related-photo-fullscreen">
 						<a href="#" class="open-lightbox" data-full-url="<?php echo esc_url($image_full_url); ?>" data-reference="<?php echo esc_html($reference); ?>" data-category="<?php echo esc_html(implode(', ', $categories)); ?>"><i class="fas fa-expand"></i></a>

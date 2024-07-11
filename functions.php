@@ -231,7 +231,7 @@ function load_more_photos()
             $reference = get_post_meta($post_id, 'reference', true);
             $categories = wp_get_post_terms($post_id, 'categorie', array("fields" => "names"));
             $formats = wp_get_post_terms($post_id, 'format', array("fields" => "names"));
-            $date = get_the_date('Y', $post_id);
+            $date = get_the_date('Y-m-d', $post_id);
             $category_slugs = wp_list_pluck(wp_get_post_terms($post_id, 'categorie'), 'slug');
             $format_slugs = wp_list_pluck(wp_get_post_terms($post_id, 'format'), 'slug');
 ?>
