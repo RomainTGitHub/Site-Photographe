@@ -52,6 +52,8 @@ document.addEventListener('DOMContentLoaded', function () {
         return window.innerWidth <= 800 ? 4 : 8;
     }
 
+    let visibleCount = 0; // Variable pour suivre le nombre de cartes visibles
+
     // Script pour le tri et filtrage des photos de la galerie
     function filterPhotos() {
         const selectedCategory = document.querySelector('#categories-dropdown .dropdown-selected').getAttribute('data-value');
@@ -88,25 +90,47 @@ document.addEventListener('DOMContentLoaded', function () {
         const container = document.getElementById('gallery-grid');
         visibleCards.forEach(card => container.appendChild(card));
 
-        // Gérer l'affichage des cartes (max 8 visibles) et du bouton "Charger plus"
+        // Réinitialiser le compteur de cartes visibles
+        visibleCount = 0;
+
+        // Afficher les cartes (max 8 visibles initialement) et gérer le bouton "Charger plus"
         const maxVisible = getMaxVisibleCards();
-        if (visibleCards.length > maxVisible) {
-            for (let i = maxVisible; i < visibleCards.length; i++) {
+        for (let i = 0; i < visibleCards.length; i++) {
+            if (i < maxVisible) {
+                visibleCards[i].classList.remove('hidden');
+                visibleCount++;
+            } else {
                 visibleCards[i].classList.add('hidden');
             }
+        }
+
+        // Gérer l'affichage du bouton "Charger plus"
+        if (visibleCount < visibleCards.length) {
             document.querySelector('.load-more-container').style.display = 'block';
         } else {
             document.querySelector('.load-more-container').style.display = 'none';
         }
     }
 
-    // Gestion du bouton "Charger plus"
-    document.getElementById('load-more').addEventListener('click', function () {
-        document.querySelectorAll('.related-photo-card.hidden').forEach(card => {
-            card.classList.remove('hidden');
-        });
-        this.style.display = 'none'; // Cacher le bouton après avoir affiché toutes les cartes
-    });
+    // Fonction pour charger plus de cartes
+    function loadMorePhotos() {
+        const hiddenCards = Array.from(document.querySelectorAll('.related-photo-card.hidden'));
+        const maxVisible = getMaxVisibleCards();
+        let count = 0;
+
+        for (let i = 0; i < hiddenCards.length && count < maxVisible; i++) {
+            hiddenCards[i].classList.remove('hidden');
+            visibleCount++;
+            count++;
+        }
+
+        if (visibleCount >= document.querySelectorAll('.related-photo-card').length) {
+            document.querySelector('.load-more-container').style.display = 'none';
+        }
+    }
+
+    // Ajouter un gestionnaire d'événements pour le bouton "Charger plus"
+    document.getElementById('load-more').addEventListener('click', loadMorePhotos);
 
     // Refiltrer les photos lorsque la taille de l'écran change
     window.addEventListener('resize', filterPhotos);

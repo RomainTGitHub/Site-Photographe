@@ -435,6 +435,16 @@ body {
     padding: 10px;
 }
 
+.related-photo-info span {
+    color: #FFF;
+    font-family: 'Poppins';
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    text-transform: uppercase;
+}
+
 .related-photo-reference {
     font-size: 0.9em;
 }
@@ -1253,8 +1263,6 @@ body.no-scroll {
 .post-comments {
     margin-top: 40px;
 }
-
-
 
 
 /* Styles pour le menu en version mobile */
