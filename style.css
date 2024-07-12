@@ -1120,6 +1120,142 @@ body.no-scroll {
     font-weight: bold;
 }
 
+/* Style pour le blog */
+
+.page-title {
+    z-index: 10000;
+    color: #000;
+    font-family: 'Space Mono';
+}
+
+.blog-list-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.blog-list-container .page-title {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.blog-posts-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.blog-post-item {
+    background: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    padding: 20px;
+    width: calc(33.333% - 20px);
+    box-sizing: border-box;
+    transition: transform 0.3s;
+}
+
+.blog-post-item:hover {
+    transform: translateY(-10px);
+}
+
+.post-thumbnail img {
+    width: 100%;
+    height: auto;
+    display: block;
+    margin-bottom: 15px;
+}
+
+.post-title {
+    font-size: 1.5em;
+    margin: 0 0 10px;
+}
+
+.post-title a {
+    text-decoration: none;
+    color: #333;
+}
+
+.post-title a:hover {
+    text-decoration: underline;
+    color: #0073aa;
+}
+
+.post-excerpt {
+    font-size: 1em;
+    color: #666;
+}
+
+.pagination {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.pagination a,
+.pagination span {
+    display: inline-block;
+    padding: 10px 15px;
+    margin: 0 2px;
+    border: 1px solid #e0e0e0;
+    color: #333;
+    text-decoration: none;
+}
+
+.pagination a:hover {
+    background-color: #0073aa;
+    color: #fff;
+    border-color: #0073aa;
+}
+
+.pagination .current {
+    background-color: #333;
+    color: #fff;
+    border-color: #333;
+}
+
+/* Style pour la page d'un article du blog */
+
+.single-post-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.post-thumbnail img {
+    width: 100%;
+    height: auto;
+    margin-bottom: 20px;
+}
+
+.post-title {
+    color: #000;
+    font-size: 2.5em;
+    margin-bottom: 10px;
+}
+
+.post-meta {
+    font-size: 0.9em;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.post-meta .post-date,
+.post-meta .post-author {
+    margin-right: 10px;
+}
+
+.post-text {
+    color: #000;
+    font-size: 1.2em;
+    line-height: 1.6;
+}
+
+.post-comments {
+    margin-top: 40px;
+}
+
+
+
 
 /* Styles pour le menu en version mobile */
 @media screen and (max-width: 800px) {
