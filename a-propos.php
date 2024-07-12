@@ -1,5 +1,4 @@
-<?php
-include_once($_SERVER['DOCUMENT_ROOT'] . '/wp-load.php');
+<?php /* Template Name: a-propos */
 get_header(); ?>
 
 <?php
